@@ -65,14 +65,13 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<void> _login() async {
-    setState(() => _busy = true);
-    await Future<void>.delayed(const Duration(milliseconds: 250));
+    setState(() {
+      _busy = true;
+      _error = null;
+    });
     final ok = _user.text.trim() == AuthStore.username &&
         _pass.text == AuthStore.password;
-    if (ok) {
-      await AuthStore.login();
-      widget.onSuccess();
-    } else {
+    if (!ok) {
       if (mounted) {
         setState(() {
           _busy = false;
@@ -80,6 +79,13 @@ class _LoginPageState extends State<LoginPage> {
         });
       }
       return;
+    }
+    // 先让 UI 表现"登录已成功"再持久化标记，避免存储调用偶发挂起时卡在转圈。
+    widget.onSuccess();
+    try {
+      await AuthStore.login().timeout(const Duration(seconds: 2));
+    } catch (_) {
+      // 即便登录标记写入失败也允许进入主界面。
     }
     if (mounted) setState(() => _busy = false);
   }
