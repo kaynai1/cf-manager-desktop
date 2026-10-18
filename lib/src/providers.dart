@@ -4,6 +4,7 @@ import 'api.dart';
 import 'defaults.dart';
 import 'models.dart';
 import 'store.dart';
+import 'store_io.dart';
 
 class AccountsState {
   final List<Account> accounts;
@@ -33,23 +34,33 @@ class AccountsNotifier extends StateNotifier<AccountsState> {
     List<Account> list;
     String? sel;
     try {
-      list = await AccountStore.load();
-      sel = await AccountStore.selected();
+      DiagLog.instance.log('init: loading accounts');
+      list =
+          await AccountStore.load().timeout(const Duration(seconds: 3), onTimeout: () async {
+        DiagLog.instance.log('init: AccountStore.load TIMED OUT');
+        return [];
+      });
     } catch (_) {
-      // 存储读取失败时仍进入页面，不无限转圈
       list = [];
-      sel = null;
     }
     try {
-      if (list.isEmpty) {
+      sel =
+          await AccountStore.selected().timeout(const Duration(seconds: 2), onTimeout: () => null);
+    } catch (_) {
+      sel = null;
+    }
+    DiagLog.instance.log('init: load done, list=${list.length}');
+    if (list.isEmpty) {
+      try {
         list = List<Account>.from(kDefaultAccounts);
-        await AccountStore.save(list);
+        await AccountStore.save(list).timeout(const Duration(seconds: 3));
         sel = list.first.id;
         await AccountStore.setSelected(sel);
+      } catch (_) {
+        // 首次写入失败不阻塞进入页面
       }
-    } catch (_) {
-      // 首次写入失败不阻塞进入页面
     }
+    DiagLog.instance.log('init: setting state loading=false');
     if (!mounted) return;
     state = AccountsState(accounts: list, selectedId: sel, loading: false);
   }
