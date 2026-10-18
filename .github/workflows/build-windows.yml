@@ -41,6 +41,17 @@ jobs:
       - name: Add Windows platform support
         run: flutter create --platforms=windows .
 
+      # 把窗口标题改成中文「Cloudflare 管理器」，并加大默认窗口尺寸
+      - name: Localize window title & size
+        shell: pwsh
+        run: |
+          $f = "windows/runner/main.cpp"
+          (Get-Content $f -Raw -Encoding UTF8) `
+            -replace 'window\.Create\(L"cloudflare_manager", L"cloudflare_manager"', 'window.Create(L"Cloudflare 管理器", L"Cloudflare 管理器"' `
+            -replace 'window\.SetSize\(1280, 720\)', 'window.SetSize(1366, 800)' |
+            Out-File $f -Encoding UTF8 -NoNewline
+          Select-String -Path $f -Pattern "window.Create" | ForEach-Object { $_.Line.Trim() }
+
       - name: Flutter pub get
         run: flutter pub get
 
