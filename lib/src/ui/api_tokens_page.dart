@@ -14,22 +14,34 @@ class ApiTokensPage extends ConsumerWidget {
       appBar: AppBar(
         title: const Text('API 令牌'),
         actions: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: FilledButton.icon(
+              style: FilledButton.styleFrom(
+                backgroundColor: Ios.orange,
+                foregroundColor: Colors.white,
+                elevation: 0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              onPressed: () => _create(context, ref),
+              icon: const Icon(Icons.add, size: 18),
+              label: const Text('创建令牌',
+                  style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700)),
+            ),
+          ),
           IconButton(
             icon: const Icon(Icons.refresh),
+            tooltip: '刷新',
             onPressed: () => ref.invalidate(apiTokensProvider),
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Ios.orange,
-        foregroundColor: Colors.white,
-        onPressed: () => _create(context, ref),
-        child: const Icon(Icons.add),
-      ),
       body: AsyncView<List<ApiToken>>(
         value: ref.watch(apiTokensProvider),
         builder: (list) => ListView(
-          padding: const EdgeInsets.only(bottom: 90),
+          padding: const EdgeInsets.only(bottom: 40),
           children: [
             IosSectionHeader('令牌（${list.length}）'),
             IosCard(
