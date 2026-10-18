@@ -14,27 +14,27 @@ class DnsPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('DNS 记录'),
+        title: Text('DNS 记录 · ${zone.name}'),
         actions: [
+          IosPageAction(
+            label: '添加记录',
+            icon: Icons.add,
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => DnsEditPage(zone: zone)),
+            ),
+          ),
           IconButton(
             icon: const Icon(Icons.refresh),
+            tooltip: '刷新',
             onPressed: () => ref.invalidate(dnsProvider(zone.id)),
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Ios.orange,
-        foregroundColor: Colors.white,
-        onPressed: () => Navigator.push(
-          context,
-          MaterialPageRoute(builder: (_) => DnsEditPage(zone: zone)),
-        ),
-        child: const Icon(Icons.add),
-      ),
       body: AsyncView<List<DnsRecord>>(
         value: ref.watch(dnsProvider(zone.id)),
         builder: (records) => ListView(
-          padding: const EdgeInsets.only(bottom: 90),
+          padding: const EdgeInsets.only(bottom: 40),
           children: [
             IosSectionHeader('记录（${records.length}）'),
             IosCard(
