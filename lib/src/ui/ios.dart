@@ -163,7 +163,7 @@ class IosCard extends StatelessWidget {
     for (var i = 0; i < children.length; i++) {
       if (i > 0) {
         rows.add(Padding(
-          padding: const EdgeInsetsDirectional.only(start: padding.horizontal),
+          padding: EdgeInsetsDirectional.only(start: padding.horizontal),
           child: Container(height: 0.5, color: sepColor),
         ));
       }
