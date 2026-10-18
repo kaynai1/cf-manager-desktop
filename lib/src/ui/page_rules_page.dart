@@ -39,22 +39,29 @@ class _PageRulesPageState extends ConsumerState<PageRulesPage> {
     String preset = _presets.keys.first;
     final ok = await showDialog<bool>(
       context: context,
+      barrierDismissible: false,
       builder: (ctx) => StatefulBuilder(
-        builder: (ctx, setSt) => AlertDialog(
-          title: const Text('新增 Page Rule'),
-          content: Column(
+        builder: (ctx, setSt) => CfDialog(
+          title: '新增 Page Rule',
+          subtitle: '按 URL 匹配后执行指定动作（免费版限 3 条）',
+          confirmLabel: '创建',
+          onConfirm: () => Navigator.pop(ctx, true),
+          child: Column(
             mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               TextField(
                 controller: url,
+                autofocus: true,
                 decoration: const InputDecoration(
-                  labelText: 'URL 匹配（如 example.com/*）',
+                  labelText: 'URL 匹配',
+                  hintText: 'example.com/*',
                 ),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: 14),
               DropdownButtonFormField<String>(
                 initialValue: preset,
-                decoration: const InputDecoration(labelText: '动作'),
+                decoration: const InputDecoration(labelText: '执行动作'),
                 items: [
                   for (final k in _presets.keys)
                     DropdownMenuItem(value: k, child: Text(k)),
@@ -63,16 +70,6 @@ class _PageRulesPageState extends ConsumerState<PageRulesPage> {
               ),
             ],
           ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(ctx, false),
-              child: const Text('取消'),
-            ),
-            TextButton(
-              onPressed: () => Navigator.pop(ctx, true),
-              child: const Text('创建'),
-            ),
-          ],
         ),
       ),
     );
