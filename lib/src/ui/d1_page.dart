@@ -20,22 +20,19 @@ class D1Page extends ConsumerWidget {
             icon: Icons.add,
             onPressed: () async {
               final name = TextEditingController();
-              final ok = await showDialog<bool>(
-                context: context,
-                builder: (ctx) => AlertDialog(
-                  title: const Text('新建数据库'),
-                  content: TextField(
-                    controller: name,
-                    decoration: const InputDecoration(labelText: '名称'),
+              final ok = await showCfDialog<bool>(
+                context,
+                title: '新建数据库',
+                subtitle: '为当前账户创建一个 D1 SQL 数据库',
+                confirmLabel: '创建',
+                confirmValue: true,
+                child: TextField(
+                  controller: name,
+                  autofocus: true,
+                  decoration: const InputDecoration(
+                    labelText: '数据库名称',
+                    hintText: '例如 my-db',
                   ),
-                  actions: [
-                    TextButton(
-                        onPressed: () => Navigator.pop(ctx, false),
-                        child: const Text('取消')),
-                    TextButton(
-                        onPressed: () => Navigator.pop(ctx, true),
-                        child: const Text('创建')),
-                  ],
                 ),
               );
               if (ok == true && name.text.trim().isNotEmpty) {
