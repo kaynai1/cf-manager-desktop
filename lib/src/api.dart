@@ -536,4 +536,24 @@ class CfApi {
 
   Future<Map<String, dynamic>> getUser() async =>
       ((await _request('GET', '/user')) as Map).cast<String, dynamic>();
+
+  // ---- Cloudflare Tunnel ----
+  Future<List<CftTunnel>> listTunnels(String accountId) async {
+    final r = await _request('GET', '/accounts/$accountId/cfd_tunnel') as List;
+    return r.map((e) => CftTunnel.fromJson(e as Map<String, dynamic>)).toList();
+  }
+
+  Future<void> createTunnel(String accountId, String name) async {
+    await _request('POST', '/accounts/$accountId/cfd_tunnel',
+        body: {'name': name, 'tunnel_secret': null});
+  }
+
+  Future<void> deleteTunnel(String accountId, String tunnelId) async {
+    await _request('DELETE', '/accounts/$accountId/cfd_tunnel/$tunnelId');
+  }
+
+  Future<void> renameTunnel(String accountId, String tunnelId, String name) async {
+    await _request('PUT', '/accounts/$accountId/cfd_tunnel/$tunnelId',
+        body: {'name': name});
+  }
 }
