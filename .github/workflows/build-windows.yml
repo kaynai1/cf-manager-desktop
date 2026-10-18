@@ -56,23 +56,52 @@ jobs:
           BUILD_DIR="build/windows/x64/runner/Release"
           cp "$BUILD_DIR"/*.exe "$BUILD_DIR"/*.dll package/ 2>/dev/null || true
           cp -r "$BUILD_DIR"/data package/ 2>/dev/null || true
-          # 其它可能的辅助文件（如需证书/资源再放开）
-          # cp "$BUILD_DIR"/*.db package/ 2>/dev/null || true
           cd package
           # 生成清单/说明
-          printf "解压后双击 cloudflare_manager.exe 即可运行。\n本文件夹包含运行时所需 DLL 与资源，请整体保留。\n" > 使用说明.txt
+          printf "双击 cloudflare_manager.exe 即可运行。\n本文件夹包含运行时所需 DLL 与资源，请整体保留。\n" > 使用说明.txt
           cd ..
           ROOT="cloudflare-manager-windows-${{ steps.meta.outputs.version }}"
           mv package "$ROOT"
           powershell -Command "Compress-Archive -Path '$ROOT' -DestinationPath 'cloudflare_manager_windows_${{ steps.meta.outputs.version }}.zip' -Force"
           ls -la *.zip
 
+      # 生成安装程序 Setup.exe（Inno Setup）
+      - name: Build Setup.exe with Inno Setup
+        shell: pwsh
+        run: |
+          # 下载并安装 Inno Setup（静默安装）
+          $iscc = "C:\Program Files (x86)\Inno Setup 6\ISCC.exe"
+          if (-not (Test-Path $iscc)) {
+            Write-Host "Installing Inno Setup..."
+            Invoke-WebRequest -Uri "https://jrsoftware.org/download.php/is.exe" -OutFile "$env:TEMP\innosetup.exe" -UseBasicParsing
+            Start-Process -Wait -FilePath "$env:TEMP\innosetup.exe" -ArgumentList "/VERYSILENT","/SUPPRESSMSGBOXES","/NORESTART"
+          }
+          Write-Host "ISCC exists: $(Test-Path $iscc)"
+          if (Test-Path $iscc) {
+            & $iscc "installer.iss"
+            Write-Host "=== installer-output contents ==="
+            Get-ChildItem "installer-output" | Select-Object Name,Length
+          } else {
+            Write-Host "::error::Inno Setup not found after install"
+            exit 1
+          }
+
       # 上传构建产物（main 分支时，可在 Actions 页手动下载）
-      - name: Upload build artifact
+      - name: Upload portable zip artifact
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: windows-portable
           path: cloudflare_manager_windows_*.zip
+          if-no-files-found: warn
+
+      - name: Upload setup artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-setup
+          path: installer-output/*.exe
+          if-no-files-found: warn
 
       # 打 tag 时发布正式 Release
       - name: Publish GitHub Release (on tag)
@@ -82,13 +111,22 @@ jobs:
           tag_name: ${{ github.ref_name }}
           name: "Cloudflare 管理器 Windows ${{ steps.meta.outputs.version }}"
           body: |
-            Windows 桌面版便携包，下载后解压，双击 `cloudflare_manager.exe` 即可使用。
+            Windows 桌面版安装程序与便携包。
 
-            ## 使用
-            1. 解压 zip
-            2. 双击 `cloudflare_manager.exe`
-            3. 登录（默认 admin/admin，请自行修改）后添加 Cloudflare API Token 即可
+            ## 下载
+            - 🔧 `cloudflare_manager_setup_*.exe`：**安装程序**，双击按向导安装即可
+            - 📦 `cloudflare_manager_windows_*.zip`：便携版，解压后双击 exe 使用
 
-            ⚠️ 若 Windows 提示 "Windows 已保护你的电脑"，点击「更多信息」→「仍要运行」即可（程序未签名）。
-          files: cloudflare_manager_windows_*.zip
+            ## 使用（安装程序版）
+            1. 下载 `cloudflare_manager_setup_*.exe`
+            2. 双击 → 按向导完成安装
+            3. 从开始菜单或桌面打开"Cloudflare 管理器"
+
+            ## 登录
+            默认账号 admin / admin（登录后请修改），然后添加 Cloudflare API Token 即可。
+
+            ⚠️ 程序未做数字签名，首次运行若提示「Windows 已保护你的电脑」，点「更多信息」→「仍要运行」即可。
+          files: |
+            cloudflare_manager_windows_*.zip
+            installer-output/cloudflare_manager_setup_*.exe
           fail_on_unmatched_files: false
