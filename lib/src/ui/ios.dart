@@ -531,3 +531,219 @@ class AsyncView<T> extends StatelessWidget {
     );
   }
 }
+
+/// ============================================================
+/// 2026 桌面数据工作台组件（对齐 Cloudflare 新版 Dashboard 形态）
+/// ============================================================
+
+/// 状态药丸（官网式）：绿=正常 橙=警告 蓝=信息 灰=停用
+class CfPill extends StatelessWidget {
+  final String text;
+  final Color color;
+  const CfPill(this.text, this.color, {super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 3),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.13),
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Text(
+        text,
+        style: TextStyle(
+          fontSize: 11,
+          fontWeight: FontWeight.w700,
+          color: color,
+        ),
+      ),
+    );
+  }
+}
+
+/// 页面骨架：大标题 + 副说明 + 右侧操作按钮（官网每页的头部布局）
+class CfPageHeader extends StatelessWidget {
+  final String title;
+  final String subtitle;
+  final List<Widget> actions;
+  const CfPageHeader({
+    super.key,
+    required this.title,
+    required this.subtitle,
+    this.actions = const [],
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(24, 20, 24, 16),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: -0.4,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  subtitle,
+                  style: const TextStyle(
+                      fontSize: 13, color: Ios.gray, height: 1.4),
+                ),
+              ],
+            ),
+          ),
+          ...actions,
+        ],
+      ),
+    );
+  }
+}
+
+/// 数据表格（官网式：表头 + 数据行 + 行内操作）
+class CfTable extends StatelessWidget {
+  final List<String> columns;
+  final List<List<Widget>> rows;
+  final Widget? emptyState;
+  const CfTable({
+    super.key,
+    required this.columns,
+    required this.rows,
+    this.emptyState,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final isLight = Theme.of(context).brightness == Brightness.light;
+    final headColor =
+        isLight ? const Color(0xFF64748B) : const Color(0xFF94A3B8);
+    final lineColor =
+        isLight ? const Color(0x14000000) : const Color(0x14FFFFFF);
+
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 24),
+      decoration: BoxDecoration(
+        color: isLight ? Colors.white : const Color(0xFF16202F),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: lineColor),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: isLight ? 0.04 : 0.2),
+            blurRadius: 12,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(10),
+        child: Column(
+          children: [
+            // 表头
+            Container(
+              decoration: BoxDecoration(
+                color: isLight
+                    ? const Color(0xFFF7F9FC)
+                    : const Color(0xFF131B2A),
+              ),
+              child: Row(
+                children: [
+                  for (final c in columns)
+                    Expanded(
+                      flex: 1,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 9),
+                        child: Text(
+                          c,
+                          style: TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w700,
+                            letterSpacing: 0.4,
+                            color: headColor,
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+            // 数据行
+            if (rows.isEmpty && emptyState != null) emptyState!,
+            for (var r = 0; r < rows.length; r++)
+              Container(
+                decoration: BoxDecoration(
+                  border: Border(
+                    top: r == 0
+                        ? BorderSide.none
+                        : BorderSide(color: lineColor),
+                  ),
+                ),
+                child: Material(
+                  color: Colors.transparent,
+                  child: Row(
+                    children: [
+                      for (final c in rows[r]) Expanded(flex: 1, child: c),
+                    ],
+                  ),
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// 单元格内容（带内边距）
+  static Widget cellOf(Widget child, {EdgeInsetsGeometry? padding}) => Padding(
+        padding:
+            padding ?? const EdgeInsets.symmetric(horizontal: 16, vertical: 11),
+        child: child,
+      );
+}
+
+/// 空状态（官网式：图标 + 标题 + 引导文字）
+class CfEmptyState extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final String hint;
+  const CfEmptyState({
+    super.key,
+    required this.icon,
+    required this.title,
+    required this.hint,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 48, horizontal: 24),
+      child: Column(
+        children: [
+          Icon(icon, size: 44, color: Ios.gray.withValues(alpha: 0.6)),
+          const SizedBox(height: 14),
+          Text(
+            title,
+            style: const TextStyle(
+                fontSize: 15, fontWeight: FontWeight.w700),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            hint,
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+                fontSize: 13, color: Ios.gray, height: 1.5),
+          ),
+        ],
+      ),
+    );
+  }
+}
