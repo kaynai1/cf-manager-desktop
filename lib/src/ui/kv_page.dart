@@ -21,22 +21,19 @@ class KvPage extends ConsumerWidget {
             icon: Icons.add,
             onPressed: () async {
               final title = TextEditingController();
-              final ok = await showDialog<bool>(
-                context: context,
-                builder: (ctx) => AlertDialog(
-                  title: const Text('新建命名空间'),
-                  content: TextField(
-                    controller: title,
-                    decoration: const InputDecoration(labelText: '标题'),
+              final ok = await showCfDialog<bool>(
+                context,
+                title: '新建命名空间',
+                subtitle: 'Workers KV 键值存储命名空间',
+                confirmLabel: '创建',
+                confirmValue: true,
+                child: TextField(
+                  controller: title,
+                  autofocus: true,
+                  decoration: const InputDecoration(
+                    labelText: '命名空间名称',
+                    hintText: '例如 my-namespace',
                   ),
-                  actions: [
-                    TextButton(
-                        onPressed: () => Navigator.pop(ctx, false),
-                        child: const Text('取消')),
-                    TextButton(
-                        onPressed: () => Navigator.pop(ctx, true),
-                        child: const Text('创建')),
-                  ],
                 ),
               );
               if (ok == true && title.text.trim().isNotEmpty) {
