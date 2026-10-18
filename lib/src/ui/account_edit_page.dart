@@ -104,124 +104,193 @@ class _AccountEditPageState extends ConsumerState<AccountEditPage> {
 
   @override
   Widget build(BuildContext context) {
+    final isLight = Theme.of(context).brightness == Brightness.light;
+    final fillColor =
+        isLight ? const Color(0xFFF7F9FC) : const Color(0xFF101927);
+    final inputBorder = OutlineInputBorder(
+      borderRadius: BorderRadius.circular(9),
+      borderSide: BorderSide.none,
+    );
     return Scaffold(
       appBar: AppBar(title: Text(isEdit ? '编辑账号' : '添加账号')),
-      body: ListView(
-        padding: const EdgeInsets.only(bottom: 40),
-        children: [
-          const IosSectionHeader('基本信息'),
-          IosCard(
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                child: TextField(
-                  controller: _name,
-                  decoration: const InputDecoration(
-                    labelText: '备注名称',
-                    border: InputBorder.none,
-                  ),
+      body: Center(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(32),
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 460),
+            child: Container(
+              padding: const EdgeInsets.all(28),
+              decoration: BoxDecoration(
+                color: isLight ? Colors.white : const Color(0xFF16202F),
+                borderRadius: BorderRadius.circular(14),
+                border: Border.all(
+                  color: isLight
+                      ? const Color(0x14000000)
+                      : const Color(0x14FFFFFF),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                child: DropdownButtonFormField<AuthType>(
-                  initialValue: _authType,
-                  decoration: const InputDecoration(
-                    labelText: '认证方式',
-                    border: InputBorder.none,
+                boxShadow: [
+                  BoxShadow(
+                    color:
+                        Colors.black.withValues(alpha: isLight ? 0.08 : 0.3),
+                    blurRadius: 40,
+                    offset: const Offset(0, 16),
                   ),
-                  items: const [
-                    DropdownMenuItem(
-                      value: AuthType.token,
-                      child: Text('API Token'),
+                ],
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Row(
+                    children: [
+                      Container(
+                        width: 38,
+                        height: 38,
+                        decoration: BoxDecoration(
+                          gradient: const LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [Ios.orange, Color(0xFFFFA63D)],
+                          ),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: const Icon(Icons.cloud_outlined,
+                            color: Colors.white, size: 21),
+                      ),
+                      const SizedBox(width: 12),
+                      Text(
+                        isEdit ? '编辑 Cloudflare 账号' : '连接 Cloudflare 账号',
+                        style: const TextStyle(
+                            fontSize: 17, fontWeight: FontWeight.w800),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 6),
+                  const Text(
+                    '凭证仅保存在本机加密存储，不会上传到任何第三方。',
+                    style: TextStyle(fontSize: 12, color: Ios.gray),
+                  ),
+                  const SizedBox(height: 22),
+                  TextField(
+                    controller: _name,
+                    decoration: InputDecoration(
+                      labelText: '备注名称',
+                      filled: true,
+                      fillColor: fillColor,
+                      border: inputBorder,
                     ),
-                    DropdownMenuItem(
-                      value: AuthType.globalKey,
-                      child: Text('Global API Key'),
+                  ),
+                  const SizedBox(height: 14),
+                  DropdownButtonFormField<AuthType>(
+                    initialValue: _authType,
+                    decoration: InputDecoration(
+                      labelText: '认证方式',
+                      filled: true,
+                      fillColor: fillColor,
+                      border: inputBorder,
+                    ),
+                    items: const [
+                      DropdownMenuItem(
+                        value: AuthType.token,
+                        child: Text('API Token（推荐）'),
+                      ),
+                      DropdownMenuItem(
+                        value: AuthType.globalKey,
+                        child: Text('Global API Key（邮箱 + 密钥）'),
+                      ),
+                    ],
+                    onChanged: (v) =>
+                        setState(() => _authType = v ?? AuthType.token),
+                  ),
+                  const SizedBox(height: 14),
+                  if (_authType == AuthType.token)
+                    TextField(
+                      controller: _token,
+                      obscureText: true,
+                      decoration: InputDecoration(
+                        labelText: 'API Token',
+                        hintText: '在 Cloudflare 控制台「My Profile → API Tokens」创建',
+                        filled: true,
+                        fillColor: fillColor,
+                        border: inputBorder,
+                      ),
+                    )
+                  else ...[
+                    TextField(
+                      controller: _email,
+                      keyboardType: TextInputType.emailAddress,
+                      decoration: InputDecoration(
+                        labelText: 'Cloudflare 邮箱',
+                        filled: true,
+                        fillColor: fillColor,
+                        border: inputBorder,
+                      ),
+                    ),
+                    const SizedBox(height: 14),
+                    TextField(
+                      controller: _key,
+                      obscureText: true,
+                      decoration: InputDecoration(
+                        labelText: 'Global API Key',
+                        filled: true,
+                        fillColor: fillColor,
+                        border: inputBorder,
+                      ),
                     ),
                   ],
-                  onChanged: (v) =>
-                      setState(() => _authType = v ?? AuthType.token),
-                ),
+                  const SizedBox(height: 14),
+                  TextField(
+                    controller: _accountId,
+                    decoration: InputDecoration(
+                      labelText: 'Account ID（选填）',
+                      helperText: 'Workers / R2 / D1 / Tunnel 等功能需要',
+                      filled: true,
+                      fillColor: fillColor,
+                      border: inputBorder,
+                    ),
+                  ),
+                  const SizedBox(height: 22),
+                  SizedBox(
+                    height: 46,
+                    child: FilledButton(
+                      style: FilledButton.styleFrom(
+                        backgroundColor: Ios.blue,
+                        disabledBackgroundColor:
+                            Ios.blue.withValues(alpha: 0.4),
+                        foregroundColor: Colors.white,
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(9),
+                        ),
+                      ),
+                      onPressed: _busy ? null : _save,
+                      child: _busy
+                          ? const SizedBox(
+                              width: 18,
+                              height: 18,
+                              child: CircularProgressIndicator(
+                                  strokeWidth: 2, color: Colors.white),
+                            )
+                          : Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Icon(Icons.verified_user,
+                                    size: 17),
+                                const SizedBox(width: 7),
+                                Text(
+                                    isEdit ? '验证并保存' : '验证并连接',
+                                    style: const TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w700)),
+                              ],
+                            ),
+                    ),
+                  ),
+                ],
               ),
-            ],
-          ),
-          const IosSectionHeader('凭证'),
-          IosCard(
-            children: [
-              if (_authType == AuthType.token)
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                  child: TextField(
-                    controller: _token,
-                    obscureText: true,
-                    decoration: const InputDecoration(
-                      labelText: 'API Token',
-                      border: InputBorder.none,
-                    ),
-                  ),
-                )
-              else ...[
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                  child: TextField(
-                    controller: _email,
-                    keyboardType: TextInputType.emailAddress,
-                    decoration: const InputDecoration(
-                      labelText: 'Cloudflare 邮箱',
-                      border: InputBorder.none,
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                  child: TextField(
-                    controller: _key,
-                    obscureText: true,
-                    decoration: const InputDecoration(
-                      labelText: 'Global API Key',
-                      border: InputBorder.none,
-                    ),
-                  ),
-                ),
-              ],
-            ],
-          ),
-          const IosSectionHeader('可选'),
-          IosCard(
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                child: TextField(
-                  controller: _accountId,
-                  decoration: const InputDecoration(
-                    labelText: 'Account ID（Workers / R2 / AI 用）',
-                    border: InputBorder.none,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const Padding(
-            padding: EdgeInsets.fromLTRB(28, 8, 28, 0),
-            child: Text(
-              '凭证仅保存在本机（系统加密存储），不会上传到任何第三方。',
-              style: TextStyle(fontSize: 12, color: Ios.gray),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 20, 16, 0),
-            child: IosButton(
-              label: isEdit ? '验证并保存' : '验证并添加',
-              icon: Icons.verified_user,
-              busy: _busy,
-              onPressed: _busy ? null : _save,
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
