@@ -141,26 +141,20 @@ class TunnelsPage extends ConsumerWidget {
     final ctrl = TextEditingController();
     final name = await showDialog<String>(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('新建 Tunnel'),
-        content: TextField(
+      barrierDismissible: false,
+      builder: (ctx) => CfDialog(
+        title: '新建 Tunnel',
+        subtitle: '创建后可获取启动命令，在本地运行 cloudflared 建立连接',
+        confirmLabel: '创建',
+        onConfirm: () => Navigator.pop(ctx, ctrl.text.trim()),
+        child: TextField(
           controller: ctrl,
           autofocus: true,
           decoration: const InputDecoration(
-            labelText: '名称',
+            labelText: '通道名称',
             hintText: '例如 my-tunnel',
           ),
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: const Text('取消'),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.pop(ctx, ctrl.text.trim()),
-            child: const Text('创建'),
-          ),
-        ],
       ),
     );
     if (name == null || name.isEmpty) return;
@@ -183,25 +177,16 @@ class TunnelsPage extends ConsumerWidget {
 
   Future<void> _delete(
       BuildContext context, WidgetRef ref, CftTunnel t) async {
-    final ok = await showDialog<bool>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('删除 Tunnel'),
-        content: Text('确定删除通道「${t.name}」吗？此操作不可撤销。'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('取消'),
-          ),
-          FilledButton(
-            style: FilledButton.styleFrom(
-              backgroundColor: Ios.red,
-              foregroundColor: Colors.white,
-            ),
-            onPressed: () => Navigator.pop(ctx, true),
-            child: const Text('删除'),
-          ),
-        ],
+    final ok = await showCfDialog<bool>(
+      context,
+      title: '删除 Tunnel',
+      subtitle: '此操作不可撤销',
+      confirmLabel: '删除',
+      confirmDanger: true,
+      confirmValue: true,
+      child: Text(
+        '确定删除通道「${t.name}」吗？删除后该通道的所有连接会立即中断。',
+        style: const TextStyle(fontSize: 13.5, height: 1.6),
       ),
     );
     if (ok != true) return;
@@ -225,43 +210,68 @@ class TunnelsPage extends ConsumerWidget {
   void _showRun(BuildContext context, CftTunnel t) {
     showDialog<void>(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('启动命令'),
-        content: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Text('1. 下载 cloudflared：\n'
-                  '   Windows:  cloudflared-windows-amd64.exe\n'
-                  '   macOS:    cloudflared (brew install cloudflared)',
-                  style: TextStyle(fontSize: 13, height: 1.6)),
-              const SizedBox(height: 8),
-              const Text('2. 登录到你的账号：',
-                  style: TextStyle(fontSize: 13, color: Ios.gray)),
-              SelectableText('cloudflared tunnel login',
-                  style: const TextStyle(
-                      fontSize: 13, fontFamily: 'monospace',
-                      color: Ios.blue)),
-              const SizedBox(height: 8),
-              const Text('3. 用 token 运行这条通道后即可连接：',
-                  style: TextStyle(fontSize: 13, color: Ios.gray)),
-              SelectableText('cloudflared tunnel run ${t.id}',
-                  style: const TextStyle(
-                      fontSize: 13, fontFamily: 'monospace',
-                      color: Ios.blue)),
-              const SizedBox(height: 8),
-              Text('通道名称：${t.name}',
-                  style: const TextStyle(fontSize: 13, color: Ios.gray)),
-            ],
-          ),
+      builder: (ctx) => CfDialog(
+        title: '启动命令',
+        subtitle: '在本地运行以下命令即可建立连接',
+        confirmLabel: '知道了',
+        onConfirm: () => Navigator.pop(ctx),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text('1. 下载 cloudflared：',
+                style: TextStyle(fontSize: 13, color: Ios.gray)),
+            const SizedBox(height: 6),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: const Color(0x0F0F172A),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: const SelectableText(
+                'Windows:  cloudflared-windows-amd64.exe\n'
+                'macOS:    brew install cloudflared',
+                style: TextStyle(fontSize: 13, height: 1.7),
+              ),
+            ),
+            const SizedBox(height: 14),
+            const Text('2. 登录到你的账号：',
+                style: TextStyle(fontSize: 13, color: Ios.gray)),
+            const SizedBox(height: 6),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: const Color(0x0F0F172A),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: SelectableText(
+                'cloudflared tunnel login',
+                style: Ios.mono.copyWith(fontSize: 13, color: Ios.blue),
+              ),
+            ),
+            const SizedBox(height: 14),
+            const Text('3. 运行这条通道：',
+                style: TextStyle(fontSize: 13, color: Ios.gray)),
+            const SizedBox(height: 6),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: const Color(0x0F0F172A),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: SelectableText(
+                'cloudflared tunnel run ${t.id}',
+                style: Ios.mono.copyWith(fontSize: 13, color: Ios.blue),
+              ),
+            ),
+            const SizedBox(height: 14),
+            Text('通道名称：${t.name}',
+                style: const TextStyle(fontSize: 12.5, color: Ios.gray)),
+          ],
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: const Text('知道了'),
-          ),
-        ],
       ),
     );
   }
