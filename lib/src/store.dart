@@ -1,18 +1,46 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import 'models.dart';
+import 'store_io.dart';
 
-/// 跨平台安全存储：
-/// - 桌面（Windows/macOS/Linux）：系统级加密存储（Windows Credential Manager 等）
-/// - Android/iOS：平台 Keystore / Keychain
-/// - Web：WebCrypto 加密（配合 `main.dart` 中的 `setInitializations`）
-final FlutterSecureStorage _kStorage = FlutterSecureStorage(
-  // Android 使用加密 SharedPreferences
-  aOptions: const AndroidOptions(),
-  iOptions: const IOSOptions(accessibility: KeychainAccessibility.first_unlock),
-);
+/// 跨平台安全存储接口。
+abstract class KVStorage {
+  Future<String?> read(String key);
+  Future<void> write(String key, String value);
+  Future<void> delete(String key);
+}
+
+/// Windows 桌面后端：使用本地文件存储（避免 flutter_secure_storage 在桌面挂起）。
+class _FileStorage implements KVStorage {
+  final SecureStore _impl = SecureStore.instance;
+  @override
+  Future<String?> read(String key) => _impl.read(key);
+  @override
+  Future<void> write(String key, String value) => _impl.write(key, value);
+  @override
+  Future<void> delete(String key) => _impl.delete(key);
+}
+
+/// 其它平台后端：系统级安全存储。
+class _SecureStorageBackend implements KVStorage {
+  final FlutterSecureStorage _s = FlutterSecureStorage(
+    aOptions: const AndroidOptions(),
+    iOptions: const IOSOptions(accessibility: KeychainAccessibility.first_unlock),
+  );
+  @override
+  Future<String?> read(String key) => _s.read(key: key);
+  @override
+  Future<void> write(String key, String value) => _s.write(key: key, value: value);
+  @override
+  Future<void> delete(String key) => _s.delete(key: key);
+}
+
+/// 选择后端：桌面（非 Web 且非移动）用文件存储，其它用系统安全存储。
+final KVStorage _kStorage =
+    (!kIsWeb && isDesktop) ? _FileStorage() : _SecureStorageBackend();
 
 /// 账号凭证安全存储（Windows Credential Manager / Android Keystore / WebCrypto）。
 class AccountStore {
