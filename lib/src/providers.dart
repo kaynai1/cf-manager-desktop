@@ -314,6 +314,13 @@ final accountInfoProvider =
   return api.getAccount(accountId);
 });
 
+final tunnelsProvider =
+    FutureProvider.family<List<CftTunnel>, String>((ref, accountId) async {
+  final api = ref.watch(apiProvider);
+  if (api == null) return [];
+  return api.listTunnels(accountId);
+});
+
 final userProvider = FutureProvider<Map<String, dynamic>>((ref) async {
   final api = ref.watch(apiProvider);
   if (api == null) return {};
