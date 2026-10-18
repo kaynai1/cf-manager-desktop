@@ -72,10 +72,11 @@ class AccountInfoPage extends ConsumerWidget {
                           children: [
                             SelectableText(
                               accountId,
-                              style: const TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w700,
-                                fontFamily: 'monospace',
+                              style: Ios.mono.copyWith(
+                                fontWeight: FontWeight.w500,
+                                color: isLight
+                                    ? const Color(0xFF0F172A)
+                                    : Colors.white,
                               ),
                             ),
                             const SizedBox(height: 2),
