@@ -36,11 +36,11 @@ class Ios {
     colors: [Color(0xCCFFFFFF), Color(0x99FFFFFF)],
   );
 
-  // ---- 深色磨砂侧栏 rgba(15,23,42,0.75) ----
-  static const sidebar = Color(0xBF0F172A);
-  static const sidebarBorder = Color(0x1FFFFFFF);
-  static const sidebarText = Color(0xFFE2E8F0);
-  static const sidebarTextDim = Color(0xFF94A3B8);
+  // ---- 白色磨砂侧栏（蓝白专业感）----
+  static const sidebar = Color(0x99FFFFFF); // 60% 白磨砂
+  static const sidebarBorder = Color(0x59FFFFFF);
+  static const sidebarText = Color(0xFF1E293B);
+  static const sidebarTextDim = Color(0xFF64748B);
 
   // ---- 暗色模式 ----
   static const bgDark = Color(0xFF0B1220);
@@ -986,9 +986,223 @@ class _HoverRowState extends State<_HoverRow> {
   }
 }
 
+/// 统一玻璃拟态弹窗（替代 Material AlertDialog，保证全应用视觉一致）
+class CfDialog extends StatelessWidget {
+  final String title;
+  final String? subtitle;
+  final Widget child;
+  final String confirmLabel;
+  final String cancelLabel;
+  final VoidCallback? onConfirm;
+  final bool confirmEnabled;
+  final bool confirmDanger;
+  final double maxWidth;
+  const CfDialog({
+    super.key,
+    required this.title,
+    this.subtitle,
+    required this.child,
+    this.confirmLabel = '确定',
+    this.cancelLabel = '取消',
+    this.onConfirm,
+    this.confirmEnabled = true,
+    this.confirmDanger = false,
+    this.maxWidth = 480,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final isLight = Theme.of(context).brightness == Brightness.light;
+    return Dialog(
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      insetPadding: const EdgeInsets.all(24),
+      child: ConstrainedBox(
+        constraints: BoxConstraints(maxWidth: maxWidth),
+        child: GlassPanel(
+          radius: 18,
+          blur: 24,
+          color: isLight ? const Color(0xF2FFFFFF) : const Color(0xF21A2437),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              // 标题区
+              Padding(
+                padding: const EdgeInsets.fromLTRB(24, 20, 16, 14),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            title,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              letterSpacing: -0.1,
+                            ),
+                          ),
+                          if (subtitle != null) ...[
+                            const SizedBox(height: 4),
+                            Text(
+                              subtitle!,
+                              style: const TextStyle(
+                                  fontSize: 12.5,
+                                  color: Ios.gray,
+                                  height: 1.45),
+                            ),
+                          ],
+                        ],
+                      ),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.close, size: 18),
+                      color: Ios.gray,
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                  ],
+                ),
+              ),
+              Divider(
+                  height: 1,
+                  color: isLight
+                      ? const Color(0x120F172A)
+                      : Ios.sepDark),
+              // 内容
+              Flexible(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(24, 18, 24, 4),
+                  child: SingleChildScrollView(child: child),
+                ),
+              ),
+              // 底部按钮
+              Padding(
+                padding: const EdgeInsets.fromLTRB(24, 14, 24, 20),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: SizedBox(
+                        height: 42,
+                        child: OutlinedButton(
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: Ios.gray,
+                            side: BorderSide(
+                                color: isLight
+                                    ? const Color(0x1F0F172A)
+                                    : Ios.cardBorderDark),
+                            shape: RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.circular(Ios.inputRadius),
+                            ),
+                          ),
+                          onPressed: () => Navigator.pop(context),
+                          child: Text(cancelLabel,
+                              style: const TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                  letterSpacing: 0.3)),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      flex: 2,
+                      child: SizedBox(
+                        height: 42,
+                        child: CfHoverLift(
+                          onTap: (confirmEnabled && onConfirm != null)
+                              ? onConfirm
+                              : null,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              gradient: confirmDanger
+                                  ? const LinearGradient(colors: [
+                                      Color(0xFFF87171),
+                                      Ios.red
+                                    ])
+                                  : Ios.primaryGradient,
+                              borderRadius:
+                                  BorderRadius.circular(Ios.inputRadius),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: (confirmDanger ? Ios.red : Ios.blue)
+                                      .withValues(
+                                          alpha: confirmEnabled ? 0.3 : 0.1),
+                                  blurRadius: 12,
+                                  offset: const Offset(0, 4),
+                                ),
+                              ],
+                            ),
+                            child: FilledButton(
+                              style: FilledButton.styleFrom(
+                                backgroundColor: Colors.transparent,
+                                disabledBackgroundColor: Colors.transparent,
+                                foregroundColor: Colors.white,
+                                elevation: 0,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(
+                                      Ios.inputRadius),
+                                ),
+                              ),
+                              onPressed:
+                                  (confirmEnabled && onConfirm != null)
+                                      ? onConfirm
+                                      : null,
+                              child: Text(confirmLabel,
+                                  style: const TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w600,
+                                      letterSpacing: 0.3)),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// 便捷：显示玻璃弹窗
+Future<T?> showCfDialog<T>(
+  BuildContext context, {
+  required String title,
+  String? subtitle,
+  required Widget child,
+  String confirmLabel = '确定',
+  String cancelLabel = '取消',
+  bool confirmEnabled = true,
+  bool confirmDanger = false,
+  double maxWidth = 480,
+  T? confirmValue,
+}) {
+  return showDialog<T>(
+    context: context,
+    barrierDismissible: false,
+    builder: (ctx) => CfDialog(
+      title: title,
+      subtitle: subtitle,
+      confirmLabel: confirmLabel,
+      cancelLabel: cancelLabel,
+      confirmEnabled: confirmEnabled,
+      confirmDanger: confirmDanger,
+      maxWidth: maxWidth,
+      onConfirm: () => Navigator.pop(ctx, confirmValue),
+      child: child,
+    ),
+  );
+}
+
 /// 空状态
-class CfEmptyState extends StatelessWidget {
-  final IconData icon;
+class CfEmptyState extends StatelessWidget {  final IconData icon;
   final String title;
   final String hint;
   const CfEmptyState({
