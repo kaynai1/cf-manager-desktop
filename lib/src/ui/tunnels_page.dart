@@ -12,21 +12,6 @@ class TunnelsPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Tunnel'),
-        actions: [
-          IosPageAction(
-            label: '新建通道',
-            icon: Icons.add,
-            onPressed: () => _create(context, ref),
-          ),
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            tooltip: '刷新',
-            onPressed: () => ref.invalidate(tunnelsProvider(accountId)),
-          ),
-        ],
-      ),
       body: AsyncView<List<CftTunnel>>(
         value: ref.watch(tunnelsProvider(accountId)),
         builder: (list) {
@@ -36,8 +21,21 @@ class TunnelsPage extends ConsumerWidget {
             children: [
               CfPageHeader(
                 title: 'Cloudflare Tunnel',
-                subtitle: '将本地服务安全映射到公网，无需开端口、无需公网 IP。'
+                subtitle: '将本地服务安全映射到公网，无需开端口。'
                     '当前 $healthy / ${list.length} 条已连接。',
+                actions: [
+                  IosPageAction(
+                    label: '新建通道',
+                    icon: Icons.add,
+                    onPressed: () => _create(context, ref),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.refresh),
+                    tooltip: '刷新',
+                    onPressed: () =>
+                        ref.invalidate(tunnelsProvider(accountId)),
+                  ),
+                ],
               ),
               CfTable(
                 columns: const ['通道', '状态', '活跃连接', '创建时间', ''],
