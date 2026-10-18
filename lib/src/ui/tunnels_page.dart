@@ -15,74 +15,126 @@ class TunnelsPage extends ConsumerWidget {
       appBar: AppBar(
         title: const Text('Tunnel'),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: () => ref.invalidate(tunnelsProvider(accountId)),
+          IosPageAction(
+            label: '新建通道',
+            icon: Icons.add,
+            onPressed: () => _create(context, ref),
           ),
           IconButton(
-            icon: const Icon(Icons.add),
-            tooltip: '新建通道',
-            onPressed: () => _create(context, ref),
+            icon: const Icon(Icons.refresh),
+            tooltip: '刷新',
+            onPressed: () => ref.invalidate(tunnelsProvider(accountId)),
           ),
         ],
       ),
       body: AsyncView<List<CftTunnel>>(
         value: ref.watch(tunnelsProvider(accountId)),
-        builder: (list) => ListView(
-          padding: const EdgeInsets.only(bottom: 40),
-          children: [
-            const Padding(
-              padding: EdgeInsets.fromLTRB(24, 16, 24, 8),
-              child: Text(
-                'Cloudflare Tunnel 通过 cloudflared 守护进程，将你的本地服务安全地暴露到公网，无需开放端口、无需公网 IP。',
-                style: TextStyle(fontSize: 13, color: Ios.gray, height: 1.5),
+        builder: (list) {
+          final healthy = list.where((t) => t.healthy).length;
+          return ListView(
+            padding: const EdgeInsets.only(bottom: 40),
+            children: [
+              CfPageHeader(
+                title: 'Cloudflare Tunnel',
+                subtitle: '将本地服务安全映射到公网，无需开端口、无需公网 IP。'
+                    '当前 $healthy / ${list.length} 条已连接。',
               ),
-            ),
-            IosSectionHeader('通道（${list.length}）'),
-            IosCard(
-              children: [
-                if (list.isEmpty)
-                  const IosRow(title: '暂无 Tunnel', subtitle: '点击右上角 + 新建'),
-                for (final t in list)
-                  IosRow(
-                    leading: IosIconBadge(
-                      icon: t.healthy ? Icons.dns : Icons.dns_outlined,
-                      color: t.healthy ? Ios.green : Ios.gray,
-                    ),
-                    title: t.name,
-                    subtitle: '${t.healthy ? '已连接' : t.connectionState ?? '未知'}'
-                        ' · ${t.connectionsActive ?? 0} 条连接',
-                    trailing: Wrap(
-                      children: [
-                        IconButton(
-                          icon: const Icon(Icons.terminal_outlined,
-                              color: Ios.blue, size: 20),
-                          tooltip: '启动命令',
-                          onPressed: () => _showRun(context, t),
+              CfTable(
+                columns: const ['通道', '状态', '活跃连接', '创建时间', ''],
+                emptyState: const CfEmptyState(
+                  icon: Icons.route_outlined,
+                  title: '还没有 Tunnel',
+                  hint: '点击右上角「新建通道」，然后按启动命令在本地运行 cloudflared。',
+                ),
+                rows: [
+                  for (final t in list)
+                    [
+                      CfTable.cellOf(Text(
+                        t.name,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                            fontSize: 13, fontWeight: FontWeight.w700),
+                      )),
+                      CfTable.cellOf(t.healthy
+                          ? const Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(Icons.circle, size: 8, color: Ios.green),
+                                SizedBox(width: 6),
+                                Text('已连接',
+                                    style: TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w600,
+                                        color: Ios.green)),
+                              ],
+                            )
+                          : Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(Icons.circle,
+                                    size: 8,
+                                    color: (t.connectionState == 'degraded')
+                                        ? Ios.orange
+                                        : Ios.gray),
+                                const SizedBox(width: 6),
+                                Flexible(
+                                  child: Text(
+                                    t.connectionState == 'degraded'
+                                        ? '降级'
+                                        : (t.connectionState ?? '未连接'),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: const TextStyle(
+                                        fontSize: 12, color: Ios.gray),
+                                  ),
+                                ),
+                              ],
+                            )),
+                      CfTable.cellOf(Text('${t.connectionsActive ?? 0}',
+                          style: const TextStyle(
+                              fontSize: 12, color: Ios.gray))),
+                      CfTable.cellOf(Text(
+                        t.createdAt?.substring(0, 10) ?? '—',
+                        style:
+                            const TextStyle(fontSize: 12, color: Ios.gray),
+                      )),
+                      CfTable.cellOf(Align(
+                        alignment: Alignment.centerRight,
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            IconButton(
+                              icon: const Icon(Icons.terminal_outlined,
+                                  size: 17, color: Ios.blue),
+                              tooltip: '启动命令',
+                              onPressed: () => _showRun(context, t),
+                            ),
+                            IconButton(
+                              icon: const Icon(Icons.delete_outline,
+                                  size: 17, color: Ios.red),
+                              tooltip: '删除',
+                              onPressed: () => _delete(context, ref, t),
+                            ),
+                          ],
                         ),
-                        IconButton(
-                          icon: const Icon(Icons.delete_outline,
-                              color: Ios.red, size: 20),
-                          tooltip: '删除',
-                          onPressed: () => _delete(context, ref, t),
-                        ),
-                      ],
-                    ),
-                  ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 24),
-              child: Text(
-                '提示：Tunnel 创建后需在本地下载 cloudflared 并登录运行，'
-                '它才会真正变成"已连接"。'
-                '点击通道右侧的终端图标可查看启动命令。',
-                style: TextStyle(fontSize: 12, color: Ios.gray, height: 1.5),
+                      )),
+                    ],
+                ],
               ),
-            ),
-          ],
-        ),
+              const SizedBox(height: 16),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 24),
+                child: Text(
+                  '提示：Tunnel 创建后需在本地下载 cloudflared 并登录运行，'
+                  '它才会真正变成"已连接"。'
+                  '点击行右侧的终端图标可查看启动命令。',
+                  style: TextStyle(fontSize: 12, color: Ios.gray, height: 1.5),
+                ),
+              ),
+            ],
+          );
+        },
       ),
     );
   }
