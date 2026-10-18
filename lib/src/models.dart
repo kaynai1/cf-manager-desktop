@@ -394,6 +394,118 @@ class PermissionGroup {
         id: (j['id'] ?? '') as String,
         name: (j['name'] ?? '') as String,
       );
+
+  /// 权限组英文 → 中文对照
+  static const zh = <String, String>{
+    'Zone Settings Read': '域名设置 · 读取',
+    'Zone Settings Edit': '域名设置 · 编辑',
+    'Zone Read': '域名 · 读取',
+    'Zone Edit': '域名 · 编辑',
+    'DNS Read': 'DNS · 读取',
+    'DNS Edit': 'DNS · 编辑',
+    'DNS Records Read': 'DNS 记录 · 读取',
+    'DNS Records Edit': 'DNS 记录 · 编辑',
+    'Zone WAF Read': 'WAF 防火墙 · 读取',
+    'Zone WAF Edit': 'WAF 防火墙 · 编辑',
+    'Firewall Services Read': '防火墙服务 · 读取',
+    'Firewall Services Edit': '防火墙服务 · 编辑',
+    'Cache Purge Purge': '缓存 · 清除',
+    'Cache Purge': '缓存清除',
+    'Zone Cache Purge': '域名缓存 · 清除',
+    'Zone Cache Purge Purge': '域名缓存 · 清除',
+    'Analytics Read': '分析 · 读取',
+    'Zone Analytics Read': '域名分析 · 读取',
+    'Zone Logs Read': '域名日志 · 读取',
+    'Logs Read': '日志 · 读取',
+    'SSL and Certificates Read': 'SSL 证书 · 读取',
+    'SSL and Certificates Edit': 'SSL 证书 · 编辑',
+    'Zone SSL and Certificates Read': '域名 SSL 证书 · 读取',
+    'Zone SSL and Certificates Edit': '域名 SSL 证书 · 编辑',
+    'Zone Rules Read': '域名规则 · 读取',
+    'Zone Rules Edit': '域名规则 · 编辑',
+    'Page Rules Read': '页面规则 · 读取',
+    'Page Rules Edit': '页面规则 · 编辑',
+    'Workers Scripts Read': 'Workers 脚本 · 读取',
+    'Workers Scripts Edit': 'Workers 脚本 · 编辑',
+    'Workers KV Storage Read': 'Workers KV 存储 · 读取',
+    'Workers KV Storage Edit': 'Workers KV 存储 · 编辑',
+    'Workers R2 Storage Read': 'R2 存储 · 读取',
+    'Workers R2 Storage Edit': 'R2 存储 · 编辑',
+    'Workers Tail Read': 'Workers 日志 · 读取',
+    'Workers AI Read': 'Workers AI · 读取',
+    'Workers AI Edit': 'Workers AI · 编辑',
+    'D1 Read': 'D1 数据库 · 读取',
+    'D1 Edit': 'D1 数据库 · 编辑',
+    'D1 Worker Read': 'D1 · 读取',
+    'D1 Write': 'D1 · 写入',
+    'User Details Read': '用户信息 · 读取',
+    'User Details Edit': '用户信息 · 编辑',
+    'Memberships Read': '成员资格 · 读取',
+    'Memberships Edit': '成员资格 · 编辑',
+    'Account Settings Read': '账户设置 · 读取',
+    'Account Settings Edit': '账户设置 · 编辑',
+    'Access: Apps and Policies Read': 'Access 应用与策略 · 读取',
+    'Access: Apps and Policies Edit': 'Access 应用与策略 · 编辑',
+    'Access: Organizations, Identities, and Groups Read':
+        'Access 组织与用户组 · 读取',
+    'Access: Organizations, Identities, and Groups Edit':
+        'Access 组织与用户组 · 编辑',
+    'Access: Service Tokens Read': 'Access 服务令牌 · 读取',
+    'Access: Service Tokens Edit': 'Access 服务令牌 · 编辑',
+    'Zone Lockdown Read': '区域锁定 · 读取',
+    'Zone Lockdown Edit': '区域锁定 · 编辑',
+    'DNS Firewall Read': 'DNS 防火墙 · 读取',
+    'DNS Firewall Edit': 'DNS 防火墙 · 编辑',
+    'Email Routing Addresses Read': '邮件路由地址 · 读取',
+    'Email Routing Addresses Edit': '邮件路由地址 · 编辑',
+    'Email Routing Rules Read': '邮件路由规则 · 读取',
+    'Email Routing Rules Edit': '邮件路由规则 · 编辑',
+    'Zone DNS Sec Read': 'DNSSEC · 读取',
+    'Zone DNS Sec Edit': 'DNSSEC · 编辑',
+    'Zone Rate Limit Read': '速率限制 · 读取',
+    'Zone Rate Limit Edit': '速率限制 · 编辑',
+    'Cloudflare Tunnel Read': 'Tunnel 隧道 · 读取',
+    'Cloudflare Tunnel Edit': 'Tunnel 隧道 · 编辑',
+    'Tunnel Read': 'Tunnel 隧道 · 读取',
+    'Tunnel Edit': 'Tunnel 隧道 · 编辑',
+    'Queues Write': '消息队列 · 写入',
+    'Queues Read': '消息队列 · 读取',
+    'Pages Write': 'Pages · 编辑',
+    'Pages Read': 'Pages · 读取',
+    'Vectorize Read': 'Vectorize · 读取',
+    'Vectorize Write': 'Vectorize · 编辑',
+    'Turnstile Read': 'Turnstile · 读取',
+    'Turnstile Edit': 'Turnstile · 编辑',
+    'Zone Turnstile Read': 'Turnstile · 读取',
+    'Zone Turnstile Edit': 'Turnstile · 编辑',
+    'R2 Read': 'R2 · 读取',
+    'R2 Edit': 'R2 · 编辑',
+    'Account Rulesets Read': '账户规则集 · 读取',
+    'Account Rulesets Edit': '账户规则集 · 编辑',
+    'Zone Rulesets Read': '域名规则集 · 读取',
+    'Zone Rulesets Edit': '域名规则集 · 编辑',
+    'Billing Read': '账单 · 读取',
+    'Zone WAF Custom Rules Read': 'WAF 自定义规则 · 读取',
+    'Zone WAF Custom Rules Edit': 'WAF 自定义规则 · 编辑',
+    'Zone WAF Custom Firewall Rules Edit': 'WAF 自定义规则 · 编辑',
+  };
+
+  String get localName {
+    final hit = zh[name];
+    if (hit != null) return hit;
+    // 未收录的：尝试局部替换常见词
+    var s = name;
+    const common = {
+      ' Read': ' · 读取',
+      ' Edit': ' · 编辑',
+      ' Write': ' · 写入',
+      ' Purge': ' · 清除',
+    };
+    for (final e in common.entries) {
+      s = s.replaceAll(e.key, e.value);
+    }
+    return s;
+  }
 }
 
 class TurnstileWidget {
