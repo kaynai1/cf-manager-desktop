@@ -11,16 +11,6 @@ class AccountInfoPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('账号信息'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            tooltip: '刷新',
-            onPressed: () => ref.invalidate(accountInfoProvider(accountId)),
-          ),
-        ],
-      ),
       body: AsyncView<Map<String, dynamic>>(
         value: ref.watch(accountInfoProvider(accountId)),
         builder: (d) {
@@ -33,6 +23,14 @@ class AccountInfoPage extends ConsumerWidget {
               CfPageHeader(
                 title: name.isEmpty ? '账户' : name,
                 subtitle: 'Account ID 即下面这串，配置 Workers 系列功能时会用到。',
+                actions: [
+                  IconButton(
+                    icon: const Icon(Icons.refresh),
+                    tooltip: '刷新',
+                    onPressed: () =>
+                        ref.invalidate(accountInfoProvider(accountId)),
+                  ),
+                ],
               ),
               // 统计卡（官网式：关键数字）
               Padding(
