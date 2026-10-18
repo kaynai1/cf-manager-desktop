@@ -24,94 +24,122 @@ import 'zone_list_page.dart';
 class _NavItem {
   final IconData icon;
   final String label;
-  final String subtitle;
-  final Color color;
-  const _NavItem(this.icon, this.label, this.subtitle, this.color);
+  const _NavItem(this.icon, this.label);
 }
 
-/// 当前选中的功能索引
-final _navIndexProvider = StateProvider<int>((ref) => 0);
+/// 侧栏分组
+class _NavGroup {
+  final String label;
+  final List<_NavItem> items;
+  const _NavGroup(this.label, this.items);
+}
+
+/// 当前选中的功能 id（用 label 作为 id）
+final _navIdProvider = StateProvider<String>((ref) => '域名');
 
 class AccountHomePage extends ConsumerWidget {
   const AccountHomePage({super.key});
 
-  static const _items = <_NavItem>[
-    _NavItem(Icons.public, '域名', 'DNS · 设置 · 安全 · 分析', Ios.blue),
-    _NavItem(Icons.bolt, 'Workers', '脚本与部署', Ios.orange),
-    _NavItem(Icons.key, 'Workers KV', '键值存储', Ios.purple),
-    _NavItem(Icons.storage, 'D1 数据库', 'SQL 数据库', Ios.blue),
-    _NavItem(Icons.inventory_2, 'R2 存储', '对象存储桶', Ios.teal),
-    _NavItem(Icons.web, 'Pages', '静态站点', Ios.orange),
-    _NavItem(Icons.list, 'Queues', '消息队列', Ios.green),
-    _NavItem(Icons.auto_awesome, 'AI 网关', 'AI Gateway', Ios.purple),
-    _NavItem(Icons.scatter_plot, 'Vectorize', '向量索引', Ios.teal),
-    _NavItem(Icons.memory, 'Durable Objects', '持久化对象', Ios.gray),
-    _NavItem(Icons.verified, 'Turnstile', '人机验证', Ios.orange),
-    _NavItem(Icons.route, 'Tunnel', '本地服务映射', Ios.teal),
-    _NavItem(Icons.lock, 'Zero Trust', 'Access 访问控制', Ios.green),
-    _NavItem(Icons.badge, '账号信息', '账户详情', Ios.blue),
-    _NavItem(Icons.people, '成员', '成员管理', Ios.purple),
-    _NavItem(Icons.vpn_key, 'API 令牌', 'Token 管理', Ios.orange),
+  static const _groups = <_NavGroup>[
+    _NavGroup('常用', [
+      _NavItem(Icons.public, '域名'),
+      _NavItem(Icons.bolt, 'Workers'),
+      _NavItem(Icons.key, 'Workers KV'),
+      _NavItem(Icons.storage, 'D1 数据库'),
+      _NavItem(Icons.inventory_2, 'R2 存储'),
+      _NavItem(Icons.web, 'Pages'),
+    ]),
+    _NavGroup('网络与安全', [
+      _NavItem(Icons.route, 'Tunnel'),
+      _NavItem(Icons.verified, 'Turnstile'),
+      _NavItem(Icons.lock, 'Zero Trust'),
+    ]),
+    _NavGroup('AI 与数据', [
+      _NavItem(Icons.auto_awesome, 'AI 网关'),
+      _NavItem(Icons.scatter_plot, 'Vectorize'),
+      _NavItem(Icons.list, 'Queues'),
+      _NavItem(Icons.memory, 'Durable Objects'),
+    ]),
+    _NavGroup('账户', [
+      _NavItem(Icons.badge, '账号信息'),
+      _NavItem(Icons.people, '成员'),
+      _NavItem(Icons.vpn_key, 'API 令牌'),
+    ]),
   ];
+
+  static const _groupAccent = <String, Color>{
+    '域名': Ios.blue,
+    'Workers': Ios.orange,
+    'Workers KV': Ios.purple,
+    'D1 数据库': Ios.blue,
+    'R2 存储': Ios.teal,
+    'Pages': Ios.orange,
+    'Tunnel': Ios.teal,
+    'Turnstile': Ios.orange,
+    'Zero Trust': Ios.green,
+    'AI 网关': Ios.purple,
+    'Vectorize': Ios.teal,
+    'Queues': Ios.green,
+    'Durable Objects': Ios.gray,
+    '账号信息': Ios.blue,
+    '成员': Ios.purple,
+    'API 令牌': Ios.orange,
+  };
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final account = ref.watch(accountsProvider).selected;
     final accountId = account?.accountId;
-    final navIndex = ref.watch(_navIndexProvider);
+    final navId = ref.watch(_navIdProvider);
+
     return Scaffold(
-      body: SafeArea(
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            _Sidebar(
-              accountName: account?.name ?? '未命名账号',
-              items: _items,
-              current: navIndex,
-              onTap: (i) => ref.read(_navIndexProvider.notifier).state = i,
-            ),
-            // 右侧内容区：独立 Navigator，页面切换/跳转都发生在这一区域，
-            // 左侧导航栏永驻，呈现桌面软件的多面板体验。
-            Expanded(
-              child: Navigator(
-                key: ValueKey('content-nav-$navIndex'),
-                onGenerateRoute: (settings) => MaterialPageRoute(
-                  builder: (_) => _pageFor(
-                    navIndex,
-                    accountId,
-                    onGoHome: () =>
-                        ref.read(_navIndexProvider.notifier).state = 0,
-                  ),
+      body: Row(
+        children: [
+          _Sidebar(
+            accountName: account?.name ?? '未命名账号',
+            groups: _groups,
+            current: navId,
+            onTap: (id) => ref.read(_navIdProvider.notifier).state = id,
+          ),
+          // 右侧内容区：独立 Navigator，切换/下钻都只发生在这里
+          Expanded(
+            child: Navigator(
+              key: ValueKey('content-nav-$navId'),
+              onGenerateRoute: (settings) => MaterialPageRoute(
+                builder: (_) => _pageFor(
+                  navId,
+                  accountId,
+                  onGoHome: () =>
+                      ref.read(_navIdProvider.notifier).state = '域名',
                 ),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 
-  Widget _pageFor(int index, String? accountId,
+  Widget _pageFor(String id, String? accountId,
       {required VoidCallback onGoHome}) {
-    // 域名、API 令牌不需要 Account ID
-    if (index == 0) return const ZoneListPage();
-    if (index == 15) return const ApiTokensPage();
+    if (id == '域名') return const ZoneListPage();
+    if (id == 'API 令牌') return const ApiTokensPage();
     if (accountId == null) return _NoAccountIdView(onGoHome: onGoHome);
-    return switch (index) {
-      1 => WorkersPage(accountId: accountId),
-      2 => KvPage(accountId: accountId),
-      3 => D1Page(accountId: accountId),
-      4 => R2Page(accountId: accountId),
-      5 => PagesPage(accountId: accountId),
-      6 => QueuesPage(accountId: accountId),
-      7 => AiGatewayPage(accountId: accountId),
-      8 => VectorizePage(accountId: accountId),
-      9 => DoPage(accountId: accountId),
-      10 => TurnstilePage(accountId: accountId),
-      11 => TunnelsPage(accountId: accountId),
-      12 => AccessPage(accountId: accountId),
-      13 => AccountInfoPage(accountId: accountId),
-      14 => MembersPage(accountId: accountId),
+    return switch (id) {
+      'Workers' => WorkersPage(accountId: accountId),
+      'Workers KV' => KvPage(accountId: accountId),
+      'D1 数据库' => D1Page(accountId: accountId),
+      'R2 存储' => R2Page(accountId: accountId),
+      'Pages' => PagesPage(accountId: accountId),
+      'Tunnel' => TunnelsPage(accountId: accountId),
+      'Turnstile' => TurnstilePage(accountId: accountId),
+      'Zero Trust' => AccessPage(accountId: accountId),
+      'AI 网关' => AiGatewayPage(accountId: accountId),
+      'Vectorize' => VectorizePage(accountId: accountId),
+      'Queues' => QueuesPage(accountId: accountId),
+      'Durable Objects' => DoPage(accountId: accountId),
+      '账号信息' => AccountInfoPage(accountId: accountId),
+      '成员' => MembersPage(accountId: accountId),
       _ => const ZoneListPage(),
     };
   }
@@ -159,15 +187,15 @@ class _NoAccountIdView extends StatelessWidget {
   }
 }
 
-/// 左侧玻璃导航栏
+/// 停靠式左侧导航栏（桌面软件形态：贴边、紧凑、分组、单行条目）
 class _Sidebar extends StatelessWidget {
   final String accountName;
-  final List<_NavItem> items;
-  final int current;
-  final ValueChanged<int> onTap;
+  final List<_NavGroup> groups;
+  final String current;
+  final ValueChanged<String> onTap;
   const _Sidebar({
     required this.accountName,
-    required this.items,
+    required this.groups,
     required this.current,
     required this.onTap,
   });
@@ -175,208 +203,167 @@ class _Sidebar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isLight = Theme.of(context).brightness == Brightness.light;
-    return Container(
-      width: 230,
-      margin: const EdgeInsets.fromLTRB(14, 14, 8, 14),
-      decoration: BoxDecoration(
-        color: isLight ? Ios.card : Ios.cardDark,
-        borderRadius: BorderRadius.circular(Ios.radius),
-        border: Border.all(
-            color: isLight ? Ios.cardBorder : Ios.cardBorderDark),
-        boxShadow: [
-          BoxShadow(
-            color: Ios.cardShadow,
-            blurRadius: 24,
-            offset: const Offset(0, 8),
-          ),
-        ],
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(Ios.radius),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // 顶部 logo + 应用名
-            Padding(
-              padding: const EdgeInsets.fromLTRB(18, 20, 16, 14),
+    final surface = isLight ? const Color(0xFFEFF4FB) : const Color(0xFF0F1829);
+    final borderColor = isLight ? const Color(0x14000000) : const Color(0x1FFFFFFF);
+
+    Widget buildItem(_NavItem item) {
+      final selected = item.label == current;
+      final color = AccountHomePage._groupAccent[item.label] ?? Ios.blue;
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 1),
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: () => onTap(item.label),
+            borderRadius: BorderRadius.circular(8),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 150),
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+              decoration: BoxDecoration(
+                color: selected
+                    ? (isLight
+                        ? Colors.white
+                        : const Color(0xFF243049))
+                    : Colors.transparent,
+                borderRadius: BorderRadius.circular(8),
+                boxShadow: selected && isLight
+                    ? [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.06),
+                          blurRadius: 4,
+                          offset: const Offset(0, 1),
+                        ),
+                      ]
+                    : null,
+              ),
               child: Row(
                 children: [
-                  Container(
-                    width: 38,
-                    height: 38,
-                    decoration: BoxDecoration(
-                      gradient: const LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: [Ios.orange, Color(0xFFFFA63D)],
-                      ),
-                      borderRadius: BorderRadius.circular(11),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Ios.orange.withValues(alpha: 0.35),
-                          blurRadius: 12,
-                          offset: const Offset(0, 4),
-                        ),
-                      ],
-                    ),
-                    child: const Icon(Icons.cloud,
-                        color: Colors.white, size: 21),
+                  Icon(
+                    item.icon,
+                    size: 17,
+                    color: selected ? color : (isLight ? Ios.gray : Ios.grayDark),
                   ),
-                  const SizedBox(width: 11),
+                  const SizedBox(width: 10),
                   Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          'Cloudflare 管理器',
-                          style: TextStyle(
-                              fontSize: 14, fontWeight: FontWeight.w800),
-                        ),
-                        Text(
-                          accountName,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            fontSize: 11,
-                            color: isLight ? Ios.gray : Ios.grayDark,
-                          ),
-                        ),
-                      ],
+                    child: Text(
+                      item.label,
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight:
+                            selected ? FontWeight.w700 : FontWeight.w500,
+                        color: selected
+                            ? (isLight ? const Color(0xFF16233A) : Colors.white)
+                            : (isLight
+                                ? const Color(0xFF445060)
+                                : Ios.grayDark),
+                      ),
                     ),
                   ),
-                ],
-              ),
-            ),
-            Divider(height: 1, indent: 18, endIndent: 18, color: isLight ? Ios.sep : Ios.sepDark),
-            // 导航项
-            Expanded(
-              child: ListView(
-                padding: const EdgeInsets.symmetric(vertical: 8),
-                children: [
-                  for (var i = 0; i < items.length; i++)
-                    _NavTile(
-                      item: items[i],
-                      selected: i == current,
-                      onTap: () => onTap(i),
+                  if (selected)
+                    Container(
+                      width: 3,
+                      height: 16,
+                      decoration: BoxDecoration(
+                        color: color,
+                        borderRadius: BorderRadius.circular(2),
+                      ),
                     ),
                 ],
               ),
             ),
-          ],
+          ),
         ),
+      );
+    }
+
+    return Container(
+      width: 212,
+      decoration: BoxDecoration(
+        color: surface,
+        border: Border(right: BorderSide(color: borderColor, width: 1)),
       ),
-    );
-  }
-}
-
-class _NavTile extends StatelessWidget {
-  final _NavItem item;
-  final bool selected;
-  final VoidCallback onTap;
-  const _NavTile({
-    required this.item,
-    required this.selected,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final isLight = Theme.of(context).brightness == Brightness.light;
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(12),
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 200),
-            curve: Curves.easeOut,
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 9),
-            decoration: BoxDecoration(
-              color: selected
-                  ? Ios.blue.withValues(alpha: 0.10)
-                  : Colors.transparent,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: selected
-                    ? Ios.blue.withValues(alpha: 0.25)
-                    : Colors.transparent,
-              ),
-            ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // 应用标识（紧凑，像软件标题栏的延续）
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 14, 16, 12),
             child: Row(
               children: [
                 Container(
-                  width: 32,
-                  height: 32,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [
-                        selected
-                            ? item.color
-                            : item.color.withValues(alpha: 0.75),
-                        Color.lerp(item.color, Colors.white, 0.2)!,
-                      ],
-                    ),
-                    borderRadius: BorderRadius.circular(9),
-                    boxShadow: selected
-                        ? [
-                            BoxShadow(
-                              color: item.color.withValues(alpha: 0.35),
-                              blurRadius: 8,
-                              offset: const Offset(0, 3),
-                            ),
-                          ]
-                        : null,
-                  ),
-                  child: Icon(item.icon, color: Colors.white, size: 17),
-                ),
-                const SizedBox(width: 11),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        item.label,
-                        style: TextStyle(
-                          fontSize: 13.5,
-                          fontWeight:
-                              selected ? FontWeight.w700 : FontWeight.w600,
-                          color: selected
-                              ? Ios.blue
-                              : (isLight
-                                  ? Colors.black87
-                                  : Colors.white),
-                        ),
-                      ),
-                      Text(
-                        item.subtitle,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          fontSize: 10.5,
-                          color: isLight ? Ios.gray : Ios.grayDark,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                // 选中指示条
-                AnimatedContainer(
-                  duration: const Duration(milliseconds: 200),
-                  width: 3,
+                  width: 26,
                   height: 26,
                   decoration: BoxDecoration(
-                    color: selected ? Ios.blue : Colors.transparent,
-                    borderRadius: BorderRadius.circular(2),
+                    gradient: const LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [Ios.orange, Color(0xFFFFA63D)],
+                    ),
+                    borderRadius: BorderRadius.circular(7),
                   ),
+                  child: const Icon(Icons.cloud, color: Colors.white, size: 15),
+                ),
+                const SizedBox(width: 9),
+                const Text(
+                  'Cloudflare 管理器',
+                  style: TextStyle(fontSize: 13, fontWeight: FontWeight.w800),
                 ),
               ],
             ),
           ),
-        ),
+          Divider(height: 1, color: borderColor),
+          // 分组导航
+          Expanded(
+            child: ListView(
+              padding: const EdgeInsets.symmetric(vertical: 6),
+              children: [
+                for (final g in groups) ...[
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(18, 12, 16, 4),
+                    child: Text(
+                      g.label,
+                      style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: 0.8,
+                        color: isLight ? Ios.gray : Ios.grayDark,
+                      ),
+                    ),
+                  ),
+                  for (final it in g.items) buildItem(it),
+                ],
+              ],
+            ),
+          ),
+          // 底部：当前账号（像软件的状态栏）
+          Divider(height: 1, color: borderColor),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(14, 10, 14, 12),
+            child: Row(
+              children: [
+                Icon(Icons.cloud_circle_outlined,
+                    size: 16, color: isLight ? Ios.gray : Ios.grayDark),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    accountName,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      color: isLight
+                          ? const Color(0xFF37475C)
+                          : Colors.white70,
+                    ),
+                  ),
+                ),
+                Icon(Icons.chevron_right,
+                    size: 14, color: isLight ? Ios.gray : Ios.grayDark),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
