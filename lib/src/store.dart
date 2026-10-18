@@ -42,13 +42,13 @@ class _SecureStorageBackend implements KVStorage {
 final KVStorage _kStorage =
     (!kIsWeb && isDesktop) ? _FileStorage() : _SecureStorageBackend();
 
-/// 账号凭证安全存储（Windows Credential Manager / Android Keystore / WebCrypto）。
+/// 账号凭证安全存储（Windows 文件 / Android Keystore / WebCrypto）。
 class AccountStore {
   static const _kAccounts = 'cf_accounts';
   static const _kSelected = 'cf_selected';
 
   static Future<List<Account>> load() async {
-    final s = await _kStorage.read(key: _kAccounts);
+    final s = await _kStorage.read(_kAccounts);
     if (s == null || s.isEmpty) return [];
     final list = jsonDecode(s) as List;
     return list
@@ -58,18 +58,18 @@ class AccountStore {
 
   static Future<void> save(List<Account> accounts) async {
     await _kStorage.write(
-      key: _kAccounts,
-      value: jsonEncode(accounts.map((e) => e.toJson()).toList()),
+      _kAccounts,
+      jsonEncode(accounts.map((e) => e.toJson()).toList()),
     );
   }
 
-  static Future<String?> selected() => _kStorage.read(key: _kSelected);
+  static Future<String?> selected() => _kStorage.read(_kSelected);
 
   static Future<void> setSelected(String? id) async {
     if (id == null) {
-      await _kStorage.delete(key: _kSelected);
+      await _kStorage.delete(_kSelected);
     } else {
-      await _kStorage.write(key: _kSelected, value: id);
+      await _kStorage.write(_kSelected, id);
     }
   }
 }
@@ -83,9 +83,9 @@ class AuthStore {
   static const password = 'admin';
 
   static Future<bool> isLoggedIn() async =>
-      (await _kStorage.read(key: _k)) == 'ok';
+      (await _kStorage.read(_k)) == 'ok';
 
-  static Future<void> login() => _kStorage.write(key: _k, value: 'ok');
+  static Future<void> login() => _kStorage.write(_k, 'ok');
 
-  static Future<void> logout() => _kStorage.delete(key: _k);
+  static Future<void> logout() => _kStorage.delete(_k);
 }
