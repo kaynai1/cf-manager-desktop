@@ -29,6 +29,7 @@ class CfManagerApp extends StatelessWidget {
       theme: IosTheme.light(),
       darkTheme: IosTheme.dark(),
       themeMode: ThemeMode.system,
+      builder: (context, child) => GlassBackground(child: child!),
       home: const LoginGate(),
     );
   }
