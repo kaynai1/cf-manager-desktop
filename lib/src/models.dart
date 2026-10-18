@@ -132,11 +132,38 @@ class DnsRecord {
 class WorkerScript {
   final String id;
   final String? modifiedOn;
-  const WorkerScript({required this.id, this.modifiedOn});
+  final String? createdOn;
+  final String? usageModel;
+  final List<String>? bindings;
+  const WorkerScript({
+    required this.id,
+    this.modifiedOn,
+    this.createdOn,
+    this.usageModel,
+    this.bindings,
+  });
   factory WorkerScript.fromJson(Map<String, dynamic> j) => WorkerScript(
         id: (j['id'] ?? '') as String,
         modifiedOn: j['modified_on'] as String?,
+        createdOn: j['created_on'] as String?,
+        usageModel: j['usage_model'] as String?,
+        bindings: (j['bindings'] as List?)
+            ?.map((e) => (e as Map)['type']?.toString() ?? '')
+            .where((t) => t.isNotEmpty)
+            .toList(),
       );
+
+  String get subLine {
+    final parts = <String>[];
+    if (usageModel != null && usageModel!.isNotEmpty) {
+      parts.add(usageModel!);
+    }
+    if (bindings != null && bindings!.isNotEmpty) {
+      final uniq = bindings!.toSet().take(3).join(' · ');
+      parts.add('绑定: $uniq');
+    }
+    return parts.isEmpty ? (modifiedOn ?? '') : parts.join(' · ');
+  }
 }
 
 class R2Bucket {
