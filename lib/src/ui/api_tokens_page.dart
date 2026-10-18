@@ -184,11 +184,15 @@ class ApiTokensPage extends ConsumerWidget {
       barrierDismissible: false,
       builder: (ctx) => StatefulBuilder(
         builder: (ctx, setSt) => Dialog(
-          backgroundColor: Colors.white,
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          insetPadding: const EdgeInsets.all(24),
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 560),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(12),
+            child: GlassPanel(
+              radius: 18,
+              blur: 24,
+              color: const Color(0xF2FFFFFF),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
