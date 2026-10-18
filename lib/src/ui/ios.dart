@@ -34,6 +34,7 @@ class Ios {
   static const cardShadowDark = Color(0x40000000);
 
   static const sep = Color(0x1AF0F4FF);
+  static const sepDark = Color(0x33FFFFFF);
   static const fill = Color(0x26FFFFFF);
   static const fillDark = Color(0x22FFFFFF);
 
