@@ -12,16 +12,6 @@ class MembersPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('成员'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            tooltip: '刷新',
-            onPressed: () => ref.invalidate(membersProvider(accountId)),
-          ),
-        ],
-      ),
       body: AsyncView<List<Member>>(
         value: ref.watch(membersProvider(accountId)),
         builder: (list) {
@@ -32,6 +22,14 @@ class MembersPage extends ConsumerWidget {
               CfPageHeader(
                 title: '账户成员',
                 subtitle: '共 ${list.length} 位成员 · $active 位已激活',
+                actions: [
+                  IconButton(
+                    icon: const Icon(Icons.refresh),
+                    tooltip: '刷新',
+                    onPressed: () =>
+                        ref.invalidate(membersProvider(accountId)),
+                  ),
+                ],
               ),
               CfTable(
                 columns: const ['成员', '状态', '成员 ID'],
