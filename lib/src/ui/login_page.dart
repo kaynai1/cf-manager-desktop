@@ -99,20 +99,35 @@ class _LoginPageState extends State<LoginPage> {
           children: [
             Center(
               child: Container(
-                width: 84,
-                height: 84,
+                width: 92,
+                height: 92,
                 decoration: BoxDecoration(
-                  color: Ios.orange,
-                  borderRadius: BorderRadius.circular(20),
+                  gradient: const LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [Ios.orange, Color(0xFFFFB35C)],
+                  ),
+                  borderRadius: BorderRadius.circular(28),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Ios.orange.withValues(alpha: 0.4),
+                      blurRadius: 24,
+                      offset: const Offset(0, 10),
+                    ),
+                  ],
                 ),
-                child: const Icon(Icons.cloud, color: Colors.white, size: 46),
+                child: const Icon(Icons.cloud, color: Colors.white, size: 48),
               ),
             ),
-            const SizedBox(height: 18),
+            const SizedBox(height: 20),
             const Center(
               child: Text(
                 'Cloudflare 管理器',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.w700),
+                style: TextStyle(
+                  fontSize: 28,
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: -0.5,
+                ),
               ),
             ),
             const SizedBox(height: 6),
