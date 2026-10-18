@@ -26,59 +26,60 @@ class _SecurityPageState extends ConsumerState<SecurityPage> {
 
     final ok = await showDialog<bool>(
       context: context,
+      barrierDismissible: false,
       builder: (ctx) => StatefulBuilder(
-        builder: (ctx, setSt) => AlertDialog(
-          title: const Text('新增访问规则'),
-          content: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                DropdownButtonFormField<String>(
-                  initialValue: mode,
-                  decoration: const InputDecoration(labelText: '动作'),
-                  items: const [
-                    DropdownMenuItem(value: 'block', child: Text('阻止')),
-                    DropdownMenuItem(value: 'challenge', child: Text('质询')),
-                    DropdownMenuItem(value: 'whitelist', child: Text('白名单')),
-                    DropdownMenuItem(
-                        value: 'js_challenge', child: Text('JS 质询')),
-                    DropdownMenuItem(
-                        value: 'managed_challenge', child: Text('托管质询')),
-                  ],
-                  onChanged: (v) => setSt(() => mode = v ?? mode),
+        builder: (ctx, setSt) => CfDialog(
+          title: '新增访问规则',
+          subtitle: '按 IP / IP 段 / ASN / 国家匹配后执行安全动作',
+          confirmLabel: '创建',
+          onConfirm: () => Navigator.pop(ctx, true),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              DropdownButtonFormField<String>(
+                initialValue: mode,
+                decoration: const InputDecoration(labelText: '动作'),
+                items: const [
+                  DropdownMenuItem(value: 'block', child: Text('阻止')),
+                  DropdownMenuItem(value: 'challenge', child: Text('质询')),
+                  DropdownMenuItem(value: 'whitelist', child: Text('白名单')),
+                  DropdownMenuItem(
+                      value: 'js_challenge', child: Text('JS 质询')),
+                  DropdownMenuItem(
+                      value: 'managed_challenge', child: Text('托管质询')),
+                ],
+                onChanged: (v) => setSt(() => mode = v ?? mode),
+              ),
+              const SizedBox(height: 14),
+              DropdownButtonFormField<String>(
+                initialValue: target,
+                decoration: const InputDecoration(labelText: '匹配类型'),
+                items: const [
+                  DropdownMenuItem(value: 'ip', child: Text('IP')),
+                  DropdownMenuItem(value: 'ip_range', child: Text('IP 段')),
+                  DropdownMenuItem(value: 'asn', child: Text('ASN')),
+                  DropdownMenuItem(value: 'country', child: Text('国家')),
+                ],
+                onChanged: (v) => setSt(() => target = v ?? target),
+              ),
+              const SizedBox(height: 14),
+              TextField(
+                controller: value,
+                style: Ios.mono.copyWith(fontSize: 13.5),
+                decoration: const InputDecoration(
+                  labelText: '匹配值',
+                  hintText: '例如 1.2.3.4 或 1.2.3.0/24',
                 ),
-                DropdownButtonFormField<String>(
-                  initialValue: target,
-                  decoration: const InputDecoration(labelText: '类型'),
-                  items: const [
-                    DropdownMenuItem(value: 'ip', child: Text('IP')),
-                    DropdownMenuItem(value: 'ip_range', child: Text('IP 段')),
-                    DropdownMenuItem(value: 'asn', child: Text('ASN')),
-                    DropdownMenuItem(value: 'country', child: Text('国家')),
-                  ],
-                  onChanged: (v) => setSt(() => target = v ?? target),
-                ),
-                TextField(
-                  controller: value,
-                  decoration: const InputDecoration(labelText: '值'),
-                ),
-                TextField(
-                  controller: notes,
-                  decoration: const InputDecoration(labelText: '备注'),
-                ),
-              ],
-            ),
+              ),
+              const SizedBox(height: 14),
+              TextField(
+                controller: notes,
+                decoration: const InputDecoration(
+                    labelText: '备注（可选）', hintText: '例如 恶意扫描'),
+              ),
+            ],
           ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(ctx, false),
-              child: const Text('取消'),
-            ),
-            TextButton(
-              onPressed: () => Navigator.pop(ctx, true),
-              child: const Text('创建'),
-            ),
-          ],
         ),
       ),
     );
