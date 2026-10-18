@@ -262,7 +262,7 @@ class _Sidebar extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 13.5,
                           fontWeight: FontWeight.w600,
-                          color: Colors.white,
+                          color: Ios.sidebarText,
                           letterSpacing: 0.2,
                         ),
                       ),
@@ -270,7 +270,7 @@ class _Sidebar extends StatelessWidget {
                   ],
                 ),
               ),
-              Container(height: 1, color: const Color(0x14FFFFFF)),
+              Container(height: 1, color: const Color(0x120F172A)),
               // 分组导航
               Expanded(
                 child: ListView(
@@ -299,7 +299,7 @@ class _Sidebar extends StatelessWidget {
                   ],
                 ),
               ),
-              Container(height: 1, color: const Color(0x14FFFFFF)),
+              Container(height: 1, color: const Color(0x120F172A)),
               // 底部账号
               Padding(
                 padding: const EdgeInsets.fromLTRB(16, 12, 16, 14),
@@ -387,28 +387,24 @@ class _SidebarItemState extends State<_SidebarItem> {
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
             decoration: BoxDecoration(
               color: selected
-                  ? Ios.blue.withValues(alpha: 0.18)
+                  ? Ios.blue.withValues(alpha: 0.12)
                   : _hover
-                      ? const Color(0x0FFFFFFF)
+                      ? const Color(0x99FFFFFF)
                       : Colors.transparent,
               borderRadius: BorderRadius.circular(10),
-              // 选中：蓝紫发光边框
+              // 选中：蓝色发光边框
               border: Border.all(
                 color: selected
-                    ? Ios.purple.withValues(alpha: 0.65)
+                    ? Ios.blue.withValues(alpha: 0.55)
                     : Colors.transparent,
                 width: 1.2,
               ),
               boxShadow: selected
                   ? [
                       BoxShadow(
-                        color: Ios.purple.withValues(alpha: 0.35),
-                        blurRadius: 14,
+                        color: Ios.blue.withValues(alpha: 0.28),
+                        blurRadius: 12,
                         spreadRadius: 0.5,
-                      ),
-                      BoxShadow(
-                        color: Ios.blue.withValues(alpha: 0.25),
-                        blurRadius: 6,
                       ),
                     ]
                   : null,
@@ -424,10 +420,10 @@ class _SidebarItemState extends State<_SidebarItem> {
                         ? LinearGradient(
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
-                            colors: [color, Ios.purple],
+                            colors: [color, Ios.blueLight],
                           )
                         : null,
-                    color: selected ? null : const Color(0x14FFFFFF),
+                    color: selected ? null : const Color(0x0F0F172A),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Icon(
