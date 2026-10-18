@@ -24,7 +24,23 @@ WizardStyle=modern
 ArchitecturesInstallIn64BitMode=x64compatible
 
 [Languages]
-Name: "chs"; MessagesFile: "compiler:Default.isl"
+Name: "chs"; MessagesFile: "compiler:Languages\ChineseSimplified.isl"
+
+[Messages]
+chs.WelcomeLabel2=这将会在你的电脑上安装 [name/rev]。%n%n建议在继续安装前关闭其他应用程序。
+chs.SelectDirLabel3=安装程序将会把 [name] 安装到下面的文件夹中。
+chs.SelectDirBrowseLabel=如需安装到其他位置，请点击“浏览(B)”。
+chs.ReadyLabel1=安装程序已准备好开始安装 [name]。
+chs.ReadyLabel2a=点击“安装(I)”开始安装。
+chs.SelectTasksLabel2=选择你想要安装程序执行的附加任务：
+chs.FinishedLabel1=[name] 已成功安装到你的电脑中。
+chs.FinishedLabel2=点击“完成(F)”退出安装向导。现在可以运行 [name] 了。
+
+[CustomMessages]
+chs.CreateDesktopIcon=创建桌面快捷方式(&D)
+chs.AdditionalIcons=附加任务：
+chs.UninstallProgram=卸载 %1
+chs.LaunchProgram=运行 %1
 
 [Tasks]
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
