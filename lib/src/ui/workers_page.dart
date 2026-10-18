@@ -24,9 +24,15 @@ class WorkersPage extends ConsumerWidget {
       body: AsyncView<List<WorkerScript>>(
         value: ref.watch(workersProvider(accountId)),
         builder: (list) => ListView(
-          padding: const EdgeInsets.only(bottom: 40),
+          padding: const EdgeInsets.fromLTRB(16, 4, 16, 40),
           children: [
-            IosSectionHeader('脚本（${list.length}）'),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(8, 10, 8, 12),
+              child: Text(
+                '脚本共 ${list.length} 个',
+                style: const TextStyle(fontSize: 13, color: Ios.gray),
+              ),
+            ),
             IosCard(
               children: [
                 if (list.isEmpty) const IosRow(title: '暂无 Worker'),
@@ -35,7 +41,7 @@ class WorkersPage extends ConsumerWidget {
                     leading: const IosIconBadge(
                         icon: Icons.bolt, color: Ios.orange),
                     title: w.id,
-                    subtitle: w.modifiedOn,
+                    subtitle: w.subLine.isEmpty ? '—' : w.subLine,
                     trailing: IconButton(
                       icon: const Icon(Icons.delete_outline,
                           color: Ios.red, size: 20),
