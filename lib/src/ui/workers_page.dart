@@ -12,16 +12,6 @@ class WorkersPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Workers'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            tooltip: '刷新',
-            onPressed: () => ref.invalidate(workersProvider(accountId)),
-          ),
-        ],
-      ),
       body: AsyncView<List<WorkerScript>>(
         value: ref.watch(workersProvider(accountId)),
         builder: (list) => ListView(
@@ -29,7 +19,15 @@ class WorkersPage extends ConsumerWidget {
           children: [
             CfPageHeader(
               title: 'Workers 脚本',
-              subtitle: '共 ${list.length} 个脚本 · 显示用量模型与绑定摘要',
+              subtitle: '共 ${list.length} 个脚本 · 用量模型与绑定摘要如下',
+              actions: [
+                IconButton(
+                  icon: const Icon(Icons.refresh),
+                  tooltip: '刷新',
+                  onPressed: () =>
+                      ref.invalidate(workersProvider(accountId)),
+                ),
+              ],
             ),
             CfTable(
               columns: const ['脚本', '用量模型 / 绑定', '更新时间', ''],
