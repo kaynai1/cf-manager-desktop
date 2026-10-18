@@ -109,25 +109,25 @@ class _LoginPageState extends State<LoginPage> {
                     children: [
                       Center(
                         child: Container(
-                          width: 92,
-                          height: 92,
+                          width: 76,
+                          height: 76,
                           decoration: BoxDecoration(
                             gradient: const LinearGradient(
                               begin: Alignment.topLeft,
                               end: Alignment.bottomRight,
-                              colors: [Ios.orange, Color(0xFFFFB35C)],
+                              colors: [Ios.orange, Color(0xFFFFA63D)],
                             ),
-                            borderRadius: BorderRadius.circular(28),
+                            borderRadius: BorderRadius.circular(20),
                             boxShadow: [
                               BoxShadow(
-                                color: Ios.orange.withValues(alpha: 0.4),
-                                blurRadius: 24,
-                                offset: const Offset(0, 10),
+                                color: Ios.orange.withValues(alpha: 0.3),
+                                blurRadius: 20,
+                                offset: const Offset(0, 8),
                               ),
                             ],
                           ),
                           child: const Icon(Icons.cloud,
-                              color: Colors.white, size: 48),
+                              color: Colors.white, size: 40),
                         ),
                       ),
                       const SizedBox(height: 24),
