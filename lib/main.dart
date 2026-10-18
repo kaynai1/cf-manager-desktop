@@ -1,7 +1,9 @@
-import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+
+// Web 端使用 web_init.dart（含 secure storage 初始化），桌面端使用 stub（空实现）。
+import 'src/web_init_stub.dart'
+    if (dart.library.html) 'src/web_init.dart';
 
 import 'src/ui/ios.dart';
 import 'src/ui/login_page.dart';
@@ -9,14 +11,9 @@ import 'src/ui/login_page.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Web 端：flutter_secure_storage v9 需要在启动时生成并持久化加密密钥。
-  // 桌面 / 移动平台不调用，交给系统级加密存储（Credential Manager / Keystore）。
-  if (kIsWeb) {
-    await const FlutterSecureStorage().setInitializations(
-      resetOnError: false,
-      usePrefs: true,
-    );
-  }
+  // Web 端：flutter_secure_storage v9 需在启动时生成并持久化加密密钥。
+  // 桌面 / 移动平台走系统级加密存储（Credential Manager / Keystore），无需初始化。
+  await initializePlatformStorage();
 
   runApp(const ProviderScope(child: CfManagerApp()));
 }
