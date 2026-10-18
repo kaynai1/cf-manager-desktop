@@ -103,22 +103,22 @@ class _PageRulesPageState extends ConsumerState<PageRulesPage> {
       appBar: AppBar(
         title: const Text('Page Rules'),
         actions: [
+          IosPageAction(
+            label: '新建规则',
+            icon: Icons.add,
+            onPressed: _busy ? null : _add,
+          ),
           IconButton(
             icon: const Icon(Icons.refresh),
+            tooltip: '刷新',
             onPressed: () => ref.invalidate(pageRulesProvider(widget.zone.id)),
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Ios.orange,
-        foregroundColor: Colors.white,
-        onPressed: _busy ? null : _add,
-        child: const Icon(Icons.add),
-      ),
       body: AsyncView<List<PageRule>>(
         value: ref.watch(pageRulesProvider(widget.zone.id)),
         builder: (rules) => ListView(
-          padding: const EdgeInsets.only(bottom: 90),
+          padding: const EdgeInsets.only(bottom: 40),
           children: [
             IosSectionHeader('Page Rules（${rules.length}，免费版 3 条）'),
             IosCard(
