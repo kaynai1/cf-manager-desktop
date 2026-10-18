@@ -67,25 +67,17 @@ class AccountListPage extends ConsumerWidget {
                               icon: const Icon(Icons.logout),
                               tooltip: '退出登录',
                               onPressed: () async {
-                                final ok = await showDialog<bool>(
-                                  context: context,
-                                  builder: (ctx) => AlertDialog(
-                                    title: const Text('退出登录'),
-                                    content: const Text('确定要退出登录吗？'),
-                                    actions: [
-                                      TextButton(
-                                        onPressed: () =>
-                                            Navigator.pop(ctx, false),
-                                        child: const Text('取消'),
-                                      ),
-                                      TextButton(
-                                        onPressed: () =>
-                                            Navigator.pop(ctx, true),
-                                        child: const Text('退出',
-                                            style:
-                                                TextStyle(color: Ios.red)),
-                                      ),
-                                    ],
+                                final ok = await showCfDialog<bool>(
+                                  context,
+                                  title: '退出登录',
+                                  subtitle: '将返回登录界面，账号凭证仍保留在本机',
+                                  confirmLabel: '退出登录',
+                                  confirmDanger: true,
+                                  confirmValue: true,
+                                  child: const Text(
+                                    '确定要退出当前登录吗？',
+                                    style: TextStyle(
+                                        fontSize: 13.5, height: 1.6),
                                   ),
                                 );
                                 if (ok == true) await onLogout!();
@@ -191,21 +183,16 @@ class AccountListPage extends ConsumerWidget {
 
   Future<void> _confirmDelete(
       BuildContext context, WidgetRef ref, Account a) async {
-    final ok = await showDialog<bool>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('删除账号'),
-        content: Text('确定删除「${a.name}」及其本地凭证吗？'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('取消'),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, true),
-            child: const Text('删除', style: TextStyle(color: Ios.red)),
-          ),
-        ],
+    final ok = await showCfDialog<bool>(
+      context,
+      title: '删除账号',
+      subtitle: '此操作不可撤销',
+      confirmLabel: '删除',
+      confirmDanger: true,
+      confirmValue: true,
+      child: Text(
+        '确定删除「${a.name}」及其保存在本机的凭证吗？',
+        style: const TextStyle(fontSize: 13.5, height: 1.6),
       ),
     );
     if (ok == true) {
