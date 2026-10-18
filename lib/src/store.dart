@@ -13,6 +13,39 @@ abstract class KVStorage {
   Future<void> delete(String key);
 }
 
+/// 给任意 KVStorage 加上超时保护：无论底层是否挂起，永远在超时后返回，
+/// 避免 UI 上的"无限转圈"。
+class _TimeoutStorage implements KVStorage {
+  final KVStorage _inner;
+  final Duration _timeout;
+  _TimeoutStorage(this._inner, [this._timeout = const Duration(seconds: 3)]);
+
+  @override
+  Future<String?> read(String key) {
+    DiagLog.instance.log('read($key) via ${_inner.runtimeType}');
+    return _inner.read(key).timeout(_timeout, onTimeout: () {
+      DiagLog.instance.log('read($key) TIMED OUT');
+      return null;
+    });
+  }
+
+  @override
+  Future<void> write(String key, String value) {
+    DiagLog.instance.log('write($key) via ${_inner.runtimeType}');
+    return _inner.write(key, value).timeout(_timeout, onTimeout: () {
+      DiagLog.instance.log('write($key) TIMED OUT');
+    });
+  }
+
+  @override
+  Future<void> delete(String key) {
+    DiagLog.instance.log('delete($key) via ${_inner.runtimeType}');
+    return _inner.delete(key).timeout(_timeout, onTimeout: () {
+      DiagLog.instance.log('delete($key) TIMED OUT');
+    });
+  }
+}
+
 /// Windows 桌面后端：使用本地文件存储（避免 flutter_secure_storage 在桌面挂起）。
 class _FileStorage implements KVStorage {
   final SecureStore _impl = SecureStore.instance;
@@ -39,8 +72,13 @@ class _SecureStorageBackend implements KVStorage {
 }
 
 /// 选择后端：桌面（非 Web 且非移动）用文件存储，其它用系统安全存储。
-final KVStorage _kStorage =
-    (!kIsWeb && isDesktop) ? _FileStorage() : _SecureStorageBackend();
+/// 统一包裹超时保护，杜绝任何底层挂起导致的无限转圈。
+final KVStorage _kStorage = () {
+  DiagLog.instance.log('kIsWeb=$kIsWeb isDesktop=$isDesktop');
+  final raw =
+      (!kIsWeb && isDesktop) ? _FileStorage() : _SecureStorageBackend();
+  return _TimeoutStorage(raw);
+}();
 
 /// 账号凭证安全存储（Windows 文件 / Android Keystore / WebCrypto）。
 class AccountStore {
