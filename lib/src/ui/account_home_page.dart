@@ -15,6 +15,7 @@ import 'pages_page.dart';
 import 'queues_page.dart';
 import 'r2_page.dart';
 import 'turnstile_page.dart';
+import 'tunnels_page.dart';
 import 'vectorize_page.dart';
 import 'workers_page.dart';
 import 'zone_list_page.dart';
@@ -44,6 +45,7 @@ class AccountHomePage extends ConsumerWidget {
     _NavItem(Icons.scatter_plot, 'Vectorize', '向量索引', Ios.teal),
     _NavItem(Icons.memory, 'Durable Objects', '持久化对象', Ios.gray),
     _NavItem(Icons.verified, 'Turnstile', '人机验证', Ios.orange),
+    _NavItem(Icons.route, 'Tunnel', '本地服务安全暴露', Ios.teal),
     _NavItem(Icons.lock, 'Zero Trust', 'Access 访问', Ios.green),
     _NavItem(Icons.badge, '账号信息', '账户详情', Ios.blue),
     _NavItem(Icons.people, '成员', '成员管理', Ios.purple),
@@ -80,6 +82,7 @@ class AccountHomePage extends ConsumerWidget {
         'Vectorize' => VectorizePage(accountId: accountId),
         'Durable Objects' => DoPage(accountId: accountId),
         'Turnstile' => TurnstilePage(accountId: accountId),
+        'Tunnel' => TunnelsPage(accountId: accountId),
         'Zero Trust' => AccessPage(accountId: accountId),
         '账号信息' => AccountInfoPage(accountId: accountId),
         '成员' => MembersPage(accountId: accountId),
