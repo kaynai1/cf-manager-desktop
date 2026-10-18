@@ -484,13 +484,15 @@ class CftTunnel {
         return m?['pending_cleanup'] != true;
       }).length;
     }
+    final connMap = j['connection'] as Map?;
+    final connStatus = connMap?['status'] as String?;
     return CftTunnel(
       id: (j['id'] ?? '') as String,
       name: (j['name'] ?? '') as String,
       status: (j['status'] ?? '') as String,
       createdAt: j['created_at'] as String?,
       deletedAt: j['deleted_at'] as String?,
-      connectionState: j['connection']['status'] ?? j['status'] as String?,
+      connectionState: connStatus ?? (j['status'] as String?),
       connectionsActive: active,
       accountTag: j['account_tag'] as String?,
     );
