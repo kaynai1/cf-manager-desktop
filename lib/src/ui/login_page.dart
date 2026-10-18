@@ -94,96 +94,120 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: ListView(
-          padding: const EdgeInsets.fromLTRB(24, 60, 24, 24),
-          children: [
-            Center(
-              child: Container(
-                width: 92,
-                height: 92,
-                decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [Ios.orange, Color(0xFFFFB35C)],
-                  ),
-                  borderRadius: BorderRadius.circular(28),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Ios.orange.withValues(alpha: 0.4),
-                      blurRadius: 24,
-                      offset: const Offset(0, 10),
-                    ),
-                  ],
-                ),
-                child: const Icon(Icons.cloud, color: Colors.white, size: 48),
-              ),
-            ),
-            const SizedBox(height: 20),
-            const Center(
-              child: Text(
-                'Cloudflare 管理器',
-                style: TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.w800,
-                  letterSpacing: -0.5,
-                ),
-              ),
-            ),
-            const SizedBox(height: 6),
-            const Center(
-              child: Text('请登录后使用', style: TextStyle(color: Ios.gray)),
-            ),
-            const SizedBox(height: 36),
-            IosCard(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                  child: TextField(
-                    controller: _user,
-                    textInputAction: TextInputAction.next,
-                    decoration: const InputDecoration(
-                      labelText: '账号',
-                      border: InputBorder.none,
-                      prefixIcon: Icon(Icons.person_outline),
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                  child: TextField(
-                    controller: _pass,
-                    obscureText: _obscure,
-                    onSubmitted: (_) => _login(),
-                    decoration: InputDecoration(
-                      labelText: '密码',
-                      border: InputBorder.none,
-                      prefixIcon: const Icon(Icons.lock_outline),
-                      suffixIcon: IconButton(
-                        icon: Icon(_obscure
-                            ? Icons.visibility_off
-                            : Icons.visibility),
-                        onPressed: () => setState(() => _obscure = !_obscure),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            // 核心区域宽度：窄屏全宽，宽屏收窄居中（呼吸感）
+            final cardMaxWidth =
+                constraints.maxWidth > 560 ? 420.0 : double.infinity;
+            return Center(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.fromLTRB(24, 48, 24, 48),
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(maxWidth: cardMaxWidth),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Center(
+                        child: Container(
+                          width: 92,
+                          height: 92,
+                          decoration: BoxDecoration(
+                            gradient: const LinearGradient(
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                              colors: [Ios.orange, Color(0xFFFFB35C)],
+                            ),
+                            borderRadius: BorderRadius.circular(28),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Ios.orange.withValues(alpha: 0.4),
+                                blurRadius: 24,
+                                offset: const Offset(0, 10),
+                              ),
+                            ],
+                          ),
+                          child: const Icon(Icons.cloud,
+                              color: Colors.white, size: 48),
+                        ),
                       ),
-                    ),
+                      const SizedBox(height: 24),
+                      const Center(
+                        child: Text(
+                          'Cloudflare 管理器',
+                          style: TextStyle(
+                            fontSize: 28,
+                            fontWeight: FontWeight.w800,
+                            letterSpacing: -0.5,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      const Center(
+                        child: Text('请登录后使用',
+                            style: TextStyle(color: Ios.gray)),
+                      ),
+                      const SizedBox(height: 44),
+                      IosCard(
+                        margin: EdgeInsets.zero,
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 20, vertical: 10),
+                        children: [
+                          TextField(
+                            controller: _user,
+                            textInputAction: TextInputAction.next,
+                            decoration: const InputDecoration(
+                              labelText: '账号',
+                              border: InputBorder.none,
+                              prefixIcon: Icon(Icons.person_outline),
+                            ),
+                          ),
+                          TextField(
+                            controller: _pass,
+                            obscureText: _obscure,
+                            onSubmitted: (_) => _login(),
+                            decoration: InputDecoration(
+                              labelText: '密码',
+                              border: InputBorder.none,
+                              prefixIcon: const Icon(Icons.lock_outline),
+                              suffixIcon: IconButton(
+                                icon: Icon(_obscure
+                                    ? Icons.visibility_off
+                                    : Icons.visibility),
+                                onPressed: () =>
+                                    setState(() => _obscure = !_obscure),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      if (_error != null)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 14),
+                          child: Center(
+                            child: Text(_error!,
+                                style:
+                                    const TextStyle(color: Ios.red)),
+                          ),
+                        ),
+                      const SizedBox(height: 28),
+                      IosButton(
+                        label: '登录',
+                        busy: _busy,
+                        onPressed: _busy ? null : _login,
+                      ),
+                      const SizedBox(height: 24),
+                      const Center(
+                        child: Text(
+                          '默认账号 admin · 密码 admin',
+                          style: TextStyle(fontSize: 12, color: Ios.gray),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-              ],
-            ),
-            if (_error != null)
-              Padding(
-                padding: const EdgeInsets.only(top: 12),
-                child: Center(
-                  child: Text(_error!, style: const TextStyle(color: Ios.red)),
-                ),
               ),
-            const SizedBox(height: 24),
-            IosButton(
-              label: '登录',
-              busy: _busy,
-              onPressed: _busy ? null : _login,
-            ),
-          ],
+            );
+          },
         ),
       ),
     );
