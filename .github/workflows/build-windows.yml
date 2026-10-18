@@ -1,0 +1,90 @@
+name: Build Windows Desktop
+
+# 触发方式：
+#  1) 每次推送到 main 都会构建并上传构建产物（不自动发正式 Release）
+#  2) 打 tag（如 v1.0.0）会自动发布一个带安装包/便携 zip 的 GitHub Release
+on:
+  push:
+    branches: [ main ]
+    tags: [ 'v*' ]
+  workflow_dispatch:   # 也支持手动点击 "Run workflow"
+
+jobs:
+  build-windows:
+    runs-on: windows-latest   # 已预装 VS2022 + Flutter 构建依赖
+    outputs:
+      version: ${{ steps.meta.outputs.version }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # 安装 Flutter（stable）
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      # 判断版本号：tag 就取 tag，否则取时间戳
+      - name: Resolve version
+        id: meta
+        shell: bash
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          if [ -z "$VERSION" ] || [ "$VERSION" = "main" ]; then
+            VERSION="dev-$(date +%Y%m%d%H%M%S)"
+          fi
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "Resolved version: $VERSION"
+
+      - name: Flutter pub get
+        run: flutter pub get
+
+      - name: Build Windows release
+        run: flutter build windows --release
+
+      # 打包成便携 zip（解压即用，双击 exe）
+      - name: Package portable zip
+        shell: bash
+        run: |
+          mkdir -p package
+          # 拷贝可执行文件与其依赖的 DLL / 资源
+          BUILD_DIR="build/windows/x64/runner/Release"
+          cp "$BUILD_DIR"/*.exe "$BUILD_DIR"/*.dll package/ 2>/dev/null || true
+          cp -r "$BUILD_DIR"/data package/ 2>/dev/null || true
+          # 其它可能的辅助文件（如需证书/资源再放开）
+          # cp "$BUILD_DIR"/*.db package/ 2>/dev/null || true
+          cd package
+          # 生成清单/说明
+          printf "解压后双击 cloudflare_manager.exe 即可运行。\n本文件夹包含运行时所需 DLL 与资源，请整体保留。\n" > 使用说明.txt
+          cd ..
+          ROOT="cloudflare-manager-windows-${{ steps.meta.outputs.version }}"
+          mv package "$ROOT"
+          powershell -Command "Compress-Archive -Path '$ROOT' -DestinationPath 'cloudflare_manager_windows_${{ steps.meta.outputs.version }}.zip' -Force"
+          ls -la *.zip
+
+      # 上传构建产物（main 分支时，可在 Actions 页手动下载）
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-portable
+          path: cloudflare_manager_windows_*.zip
+
+      # 打 tag 时发布正式 Release
+      - name: Publish GitHub Release (on tag)
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: "Cloudflare 管理器 Windows ${{ steps.meta.outputs.version }}"
+          body: |
+            Windows 桌面版便携包，下载后解压，双击 `cloudflare_manager.exe` 即可使用。
+
+            ## 使用
+            1. 解压 zip
+            2. 双击 `cloudflare_manager.exe`
+            3. 登录（默认 admin/admin，请自行修改）后添加 Cloudflare API Token 即可
+
+            ⚠️ 若 Windows 提示 "Windows 已保护你的电脑"，点击「更多信息」→「仍要运行」即可（程序未签名）。
+          files: cloudflare_manager_windows_*.zip
+          fail_on_unmatched_files: false
