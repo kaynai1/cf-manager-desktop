@@ -139,68 +139,46 @@ class AccountListPage extends ConsumerWidget {
                           ),
                         )
                       else
-                        Container(
-                          decoration: BoxDecoration(
-                            color: isLight
-                                ? Colors.white
-                                : const Color(0xFF16202F),
-                            borderRadius: BorderRadius.circular(14),
-                            border: Border.all(
-                              color: isLight
-                                  ? const Color(0x14000000)
-                                  : const Color(0x14FFFFFF),
-                            ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withValues(
-                                    alpha: isLight ? 0.06 : 0.25),
-                                blurRadius: 24,
-                                offset: const Offset(0, 8),
-                              ),
-                            ],
-                          ),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(14),
-                            child: Column(
-                              children: [
-                                for (var i = 0; i < accounts.length; i++) ...[
-                                  if (i > 0)
-                                    Divider(
-                                        height: 1,
-                                        color: isLight
-                                            ? const Color(0x14000000)
-                                            : const Color(0x14FFFFFF)),
-                                  _AccountTile(
-                                    account: accounts[i],
-                                    selected:
-                                        state.selected?.id == accounts[i].id,
-                                    onTap: () async {
-                                      await ref
-                                          .read(accountsProvider.notifier)
-                                          .select(accounts[i].id);
-                                      if (context.mounted) {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (_) =>
-                                                const AccountHomePage(),
-                                          ),
-                                        );
-                                      }
-                                    },
-                                    onEdit: () => Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (_) => AccountEditPage(
-                                            account: accounts[i]),
-                                      ),
+                        GlassPanel(
+                          child: Column(
+                            children: [
+                              for (var i = 0; i < accounts.length; i++) ...[
+                                if (i > 0)
+                                  Divider(
+                                      height: 1,
+                                      color: isLight
+                                          ? const Color(0x120F172A)
+                                          : const Color(0x14FFFFFF)),
+                                _AccountTile(
+                                  account: accounts[i],
+                                  selected:
+                                      state.selected?.id == accounts[i].id,
+                                  onTap: () async {
+                                    await ref
+                                        .read(accountsProvider.notifier)
+                                        .select(accounts[i].id);
+                                    if (context.mounted) {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (_) =>
+                                              const AccountHomePage(),
+                                        ),
+                                      );
+                                    }
+                                  },
+                                  onEdit: () => Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => AccountEditPage(
+                                          account: accounts[i]),
                                     ),
-                                    onDelete: () => _confirmDelete(
-                                        context, ref, accounts[i]),
                                   ),
-                                ],
+                                  onDelete: () => _confirmDelete(
+                                      context, ref, accounts[i]),
+                                ),
                               ],
-                            ),
+                            ],
                           ),
                         ),
                     ],
