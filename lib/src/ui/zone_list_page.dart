@@ -84,31 +84,33 @@ class _ZoneCardState extends State<_ZoneCard>
     final active = z.status == 'active';
     return Padding(
       padding: const EdgeInsets.only(bottom: 14),
-      child: Container(
-        decoration: BoxDecoration(
-          gradient: Ios.glassGradient,
-          borderRadius: BorderRadius.circular(Ios.radius),
-          border: Border.all(color: Ios.cardBorder, width: 1),
-          boxShadow: [
-            BoxShadow(
-              color: Ios.cardShadow,
-              blurRadius: 24,
-              offset: const Offset(0, 8),
-            ),
-          ],
-        ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(Ios.radius),
-          child: Column(
-            children: [
-              // 头部行：点击展开/收起
-              InkWell(
-                onTap: () =>
-                    setState(() => _expanded = !_expanded),
-                borderRadius: BorderRadius.circular(Ios.radius),
-                child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      child: CfHoverLift(
+        onTap: () => setState(() => _expanded = !_expanded),
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: Ios.glassGradient,
+            borderRadius: BorderRadius.circular(Ios.radius),
+            border: Border.all(color: Ios.cardBorder, width: 1),
+            boxShadow: [
+              BoxShadow(
+                color: Ios.cardShadow,
+                blurRadius: 24,
+                offset: const Offset(0, 8),
+              ),
+            ],
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(Ios.radius),
+            child: Column(
+              children: [
+                // 头部行：点击展开/收起
+                InkWell(
+                  onTap: () =>
+                      setState(() => _expanded = !_expanded),
+                  borderRadius: BorderRadius.circular(Ios.radius),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 14),
                   child: Row(
                     children: [
                       IosIconBadge(
@@ -236,6 +238,7 @@ class _ZoneCardState extends State<_ZoneCard>
             ],
           ),
         ),
+      ),
       ),
     );
   }
