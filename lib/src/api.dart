@@ -463,25 +463,30 @@ class CfApi {
         .toList();
   }
 
-  Future<void> createApiToken(String name, String permissionGroupId) =>
-      _request('POST', '/user/tokens', body: {
-        'name': name,
-        'policies': [
-          {
-            'effect': 'allow',
-            'resources': {'com.cloudflare.api.account.*': '*'},
-            'permission_groups': [
-              {'id': permissionGroupId}
-            ],
-          }
-        ],
-      });
+  Future<Map<String, dynamic>> createApiToken(
+      String name, List<String> permissionGroupIds) async {
+    final r = await _request('POST', '/user/tokens', body: {
+      'name': name,
+      'policies': [
+        {
+          'effect': 'allow',
+          'resources': {'com.cloudflare.api.account.*': '*'},
+          'permission_groups': [
+            for (final id in permissionGroupIds) {'id': id},
+          ],
+        }
+      ],
+    });
+    return (r as Map).cast<String, dynamic>();
+  }
 
   Future<void> deleteApiToken(String tokenId) =>
       _request('DELETE', '/user/tokens/$tokenId');
 
-  Future<void> rollApiToken(String tokenId) =>
-      _request('PUT', '/user/tokens/$tokenId/value');
+  Future<String> rollApiToken(String tokenId) async {
+    final r = await _request('PUT', '/user/tokens/$tokenId/value');
+    return ((r as Map)['value'] ?? '') as String;
+  }
 
   // ---- Turnstile ----
   Future<List<TurnstileWidget>> listTurnstile(String accountId) async {
