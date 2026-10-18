@@ -533,6 +533,15 @@ class PermissionGroup {
     }
     return s;
   }
+
+  /// 分类：编辑 / 读取 / 其他
+  String get kind {
+    if (name.contains('Edit') || name.contains('Write') || name.contains('Purge')) {
+      return '编辑类';
+    }
+    if (name.contains('Read')) return '读取类';
+    return '其他';
+  }
 }
 
 class TurnstileWidget {
