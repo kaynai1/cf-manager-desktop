@@ -14,7 +14,7 @@ class DnsPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('DNS 记录 · ${zone.name}'),
+        title: Text('DNS · ${zone.name}'),
         actions: [
           IosPageAction(
             label: '添加记录',
@@ -33,68 +33,95 @@ class DnsPage extends ConsumerWidget {
       ),
       body: AsyncView<List<DnsRecord>>(
         value: ref.watch(dnsProvider(zone.id)),
-        builder: (records) => ListView(
-          padding: const EdgeInsets.only(bottom: 40),
-          children: [
-            IosSectionHeader('记录（${records.length}）'),
-            IosCard(
-              children: [
-                if (records.isEmpty) const IosRow(title: '暂无 DNS 记录'),
-                for (final r in records)
-                  IosRow(
-                    leading: IosIconBadge(
-                      icon: _iconFor(r.type),
-                      color: _colorFor(r.type),
-                    ),
-                    title: '${r.type}  ${r.name}',
-                    subtitle: r.proxied ? '${r.content} · 已代理' : r.content,
-                    chevron: true,
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => DnsEditPage(zone: zone, record: r),
-                      ),
-                    ),
-                  ),
-              ],
-            ),
-          ],
-        ),
+        builder: (records) {
+          final proxied =
+              records.where((r) => r.proxied).length;
+          return ListView(
+            padding: const EdgeInsets.only(bottom: 40),
+            children: [
+              CfPageHeader(
+                title: 'DNS 记录',
+                subtitle: '共 ${records.length} 条 · $proxied 条已开启橙云代理 · 点击行编辑',
+              ),
+              CfTable(
+                columns: const ['类型', '名称', '内容', '代理状态', ''],
+                emptyState: const CfEmptyState(
+                  icon: Icons.dns_outlined,
+                  title: '还没有 DNS 记录',
+                  hint: '点击右上角「添加记录」，为你的域名创建第一条解析。',
+                ),
+                rows: [
+                  for (final r in records)
+                    [
+                      // 类型
+                      CfTable.cellOf(CfPill(
+                          r.type,
+                          r.type == 'A'
+                              ? Ios.blue
+                              : r.type == 'AAAA'
+                                  ? Ios.teal
+                                  : r.type == 'CNAME'
+                                      ? Ios.purple
+                                      : r.type == 'MX'
+                                          ? Ios.green
+                                          : Ios.gray)),
+                      // 名称
+                      CfTable.cellOf(Text(
+                        r.name,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                            fontSize: 13, fontWeight: FontWeight.w600),
+                      )),
+                      // 内容
+                      CfTable.cellOf(Text(
+                        r.content,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                            fontSize: 12.5, color: Colors.black87),
+                      )),
+                      // 代理状态
+                      CfTable.cellOf(r.proxied
+                          ? Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(Icons.cloud,
+                                    size: 14, color: Ios.orange),
+                                const SizedBox(width: 5),
+                                const Text('已代理',
+                                    style: TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w600,
+                                        color: Ios.orange)),
+                              ],
+                            )
+                          : const Text('仅 DNS',
+                              style:
+                                  TextStyle(fontSize: 12, color: Ios.gray))),
+                      // 操作
+                      CfTable.cellOf(Align(
+                        alignment: Alignment.centerRight,
+                        child: IconButton(
+                          icon: const Icon(Icons.edit_outlined,
+                              size: 17, color: Ios.gray),
+                          tooltip: '编辑',
+                          onPressed: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) =>
+                                  DnsEditPage(zone: zone, record: r),
+                            ),
+                          ),
+                        ),
+                      )),
+                    ],
+                ],
+              ),
+            ],
+          );
+        },
       ),
     );
-  }
-
-  static IconData _iconFor(String type) {
-    switch (type) {
-      case 'A':
-      case 'AAAA':
-        return Icons.language;
-      case 'CNAME':
-        return Icons.alt_route;
-      case 'MX':
-        return Icons.email;
-      case 'TXT':
-        return Icons.text_fields;
-      case 'NS':
-        return Icons.dns;
-      default:
-        return Icons.tag;
-    }
-  }
-
-  static Color _colorFor(String type) {
-    switch (type) {
-      case 'A':
-      case 'AAAA':
-        return Ios.blue;
-      case 'CNAME':
-        return Ios.purple;
-      case 'MX':
-        return Ios.teal;
-      case 'TXT':
-        return Ios.gray;
-      default:
-        return Ios.orange;
-    }
   }
 }
