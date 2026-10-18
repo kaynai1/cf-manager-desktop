@@ -394,6 +394,42 @@ class IosIconBadge extends StatelessWidget {
   }
 }
 
+/// 页面顶栏主操作按钮（桌面软件形态，替代手机风格的悬浮球）
+class IosPageAction extends StatelessWidget {
+  final String label;
+  final VoidCallback? onPressed;
+  final IconData icon;
+  const IosPageAction({
+    super.key,
+    required this.label,
+    required this.onPressed,
+    required this.icon,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: FilledButton.icon(
+        style: FilledButton.styleFrom(
+          backgroundColor: Ios.blue,
+          foregroundColor: Colors.white,
+          elevation: 0,
+          padding: const EdgeInsets.symmetric(horizontal: 14),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(9),
+          ),
+        ),
+        onPressed: onPressed,
+        icon: Icon(icon, size: 17),
+        label: Text(label,
+            style:
+                const TextStyle(fontSize: 13, fontWeight: FontWeight.w700)),
+      ),
+    );
+  }
+}
+
 class IosButton extends StatelessWidget {
   final String label;
   final VoidCallback? onPressed;
