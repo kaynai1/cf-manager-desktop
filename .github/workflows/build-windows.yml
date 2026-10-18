@@ -37,6 +37,10 @@ jobs:
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
           echo "Resolved version: $VERSION"
 
+      # 项目未提交 windows/ 平台目录，先自动生成 Windows 桌面支持
+      - name: Add Windows platform support
+        run: flutter create --platforms=windows .
+
       - name: Flutter pub get
         run: flutter pub get
 
