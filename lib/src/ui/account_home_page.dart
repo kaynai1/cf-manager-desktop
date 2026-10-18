@@ -25,14 +25,7 @@ class _NavItem {
   final String label;
   final String subtitle;
   final Color color;
-  final Widget? Function(String? accountId) pageBuilder;
-  const _NavItem(
-    this.icon,
-    this.label,
-    this.subtitle,
-    this.color,
-    this.pageBuilder,
-  );
+  const _NavItem(this.icon, this.label, this.subtitle, this.color);
 }
 
 class AccountHomePage extends ConsumerWidget {
@@ -40,22 +33,21 @@ class AccountHomePage extends ConsumerWidget {
 
   static const _items = <_NavItem>[
     _NavItem(Icons.public, '域名 Zones', 'DNS · 设置 · 规则 · 安全 · 分析',
-        Ios.blue, (_) => const ZoneListPage()),
-    _NavItem(Icons.bolt, 'Workers', '脚本与部署', Ios.orange,
-        (_) => null), // 由下方列表单独处理 accountId
-    _NavItem(Icons.key, 'Workers KV', '键值存储', Ios.purple, (_) => null),
-    _NavItem(Icons.storage, 'D1 数据库', 'SQL 数据库', Ios.blue, (_) => null),
-    _NavItem(Icons.inventory_2, 'R2 对象存储', '对象存储桶', Ios.teal, (_) => null),
-    _NavItem(Icons.web, 'Pages', '静态站点', Ios.orange, (_) => null),
-    _NavItem(Icons.list, 'Queues', '消息队列', Ios.green, (_) => null),
-    _NavItem(Icons.auto_awesome, 'AI Gateway', 'AI 网关', Ios.purple, (_) => null),
-    _NavItem(Icons.scatter_plot, 'Vectorize', '向量索引', Ios.teal, (_) => null),
-    _NavItem(Icons.memory, 'Durable Objects', '持久化对象', Ios.gray, (_) => null),
-    _NavItem(Icons.verified, 'Turnstile', '人机验证', Ios.orange, (_) => null),
-    _NavItem(Icons.lock, 'Zero Trust', 'Access 访问', Ios.green, (_) => null),
-    _NavItem(Icons.badge, '账号信息', '账户详情', Ios.blue, (_) => null),
-    _NavItem(Icons.people, '成员', '成员管理', Ios.purple, (_) => null),
-    _NavItem(Icons.vpn_key, 'API 令牌', 'Token 管理', Ios.orange, (_) => null),
+        Ios.blue),
+    _NavItem(Icons.bolt, 'Workers', '脚本与部署', Ios.orange),
+    _NavItem(Icons.key, 'Workers KV', '键值存储', Ios.purple),
+    _NavItem(Icons.storage, 'D1 数据库', 'SQL 数据库', Ios.blue),
+    _NavItem(Icons.inventory_2, 'R2 对象存储', '对象存储桶', Ios.teal),
+    _NavItem(Icons.web, 'Pages', '静态站点', Ios.orange),
+    _NavItem(Icons.list, 'Queues', '消息队列', Ios.green),
+    _NavItem(Icons.auto_awesome, 'AI Gateway', 'AI 网关', Ios.purple),
+    _NavItem(Icons.scatter_plot, 'Vectorize', '向量索引', Ios.teal),
+    _NavItem(Icons.memory, 'Durable Objects', '持久化对象', Ios.gray),
+    _NavItem(Icons.verified, 'Turnstile', '人机验证', Ios.orange),
+    _NavItem(Icons.lock, 'Zero Trust', 'Access 访问', Ios.green),
+    _NavItem(Icons.badge, '账号信息', '账户详情', Ios.blue),
+    _NavItem(Icons.people, '成员', '成员管理', Ios.purple),
+    _NavItem(Icons.vpn_key, 'API 令牌', 'Token 管理', Ios.orange),
   ];
 
   @override
