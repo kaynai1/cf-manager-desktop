@@ -679,21 +679,13 @@ class CfTable extends StatelessWidget {
             // 数据行
             if (rows.isEmpty && emptyState != null) emptyState!,
             for (var r = 0; r < rows.length; r++)
-              Container(
-                decoration: BoxDecoration(
-                  border: Border(
-                    top: r == 0
-                        ? BorderSide.none
-                        : BorderSide(color: lineColor),
-                  ),
-                ),
-                child: Material(
-                  color: Colors.transparent,
-                  child: Row(
-                    children: [
-                      for (final c in rows[r]) Expanded(flex: 1, child: c),
-                    ],
-                  ),
+              _HoverRow(
+                zebra: r % 2 == 1,
+                lineColor: lineColor,
+                child: Row(
+                  children: [
+                    for (final c in rows[r]) Expanded(flex: 1, child: c),
+                  ],
                 ),
               ),
           ],
@@ -708,6 +700,53 @@ class CfTable extends StatelessWidget {
             padding ?? const EdgeInsets.symmetric(horizontal: 16, vertical: 11),
         child: child,
       );
+}
+
+/// 悬停高亮的数据行（桌面表格的标配交互）
+class _HoverRow extends StatefulWidget {
+  final bool zebra;
+  final Color lineColor;
+  final Widget child;
+  const _HoverRow({
+    required this.zebra,
+    required this.lineColor,
+    required this.child,
+  });
+
+  @override
+  State<_HoverRow> createState() => _HoverRowState();
+}
+
+class _HoverRowState extends State<_HoverRow> {
+  bool _hover = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final isLight = Theme.of(context).brightness == Brightness.light;
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      onEnter: (_) => setState(() => _hover = true),
+      onExit: (_) => setState(() => _hover = false),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 90),
+        decoration: BoxDecoration(
+          color: _hover
+              ? (isLight
+                  ? const Color(0xFFEFF4FC)
+                  : const Color(0xFF1D2A40))
+              : widget.zebra
+                  ? (isLight
+                      ? const Color(0xFFFAFBFD)
+                      : const Color(0xFF141D2C))
+                  : Colors.transparent,
+          border: Border(
+            top: BorderSide(color: widget.lineColor),
+          ),
+        ),
+        child: widget.child,
+      ),
+    );
+  }
 }
 
 /// 空状态（官网式：图标 + 标题 + 引导文字）
