@@ -20,22 +20,19 @@ class R2Page extends ConsumerWidget {
             icon: Icons.add,
             onPressed: () async {
               final name = TextEditingController();
-              final ok = await showDialog<bool>(
-                context: context,
-                builder: (ctx) => AlertDialog(
-                  title: const Text('新建存储桶'),
-                  content: TextField(
-                    controller: name,
-                    decoration: const InputDecoration(labelText: '桶名'),
+              final ok = await showCfDialog<bool>(
+                context,
+                title: '新建存储桶',
+                subtitle: 'R2 对象存储桶（名称需全局唯一）',
+                confirmLabel: '创建',
+                confirmValue: true,
+                child: TextField(
+                  controller: name,
+                  autofocus: true,
+                  decoration: const InputDecoration(
+                    labelText: '桶名称',
+                    hintText: '例如 my-bucket',
                   ),
-                  actions: [
-                    TextButton(
-                        onPressed: () => Navigator.pop(ctx, false),
-                        child: const Text('取消')),
-                    TextButton(
-                        onPressed: () => Navigator.pop(ctx, true),
-                        child: const Text('创建')),
-                  ],
                 ),
               );
               if (ok == true && name.text.trim().isNotEmpty) {
