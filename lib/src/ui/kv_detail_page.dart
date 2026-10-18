@@ -17,22 +17,22 @@ class KvDetailPage extends ConsumerWidget {
       appBar: AppBar(
         title: Text(ns.title),
         actions: [
+          IosPageAction(
+            label: '新建键',
+            icon: Icons.add,
+            onPressed: () => _edit(context, ref, null),
+          ),
           IconButton(
             icon: const Icon(Icons.refresh),
+            tooltip: '刷新',
             onPressed: () => ref.invalidate(kvKeysProvider(key)),
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Ios.orange,
-        foregroundColor: Colors.white,
-        onPressed: () => _edit(context, ref, null),
-        child: const Icon(Icons.add),
-      ),
       body: AsyncView<List<KvKey>>(
         value: ref.watch(kvKeysProvider(key)),
         builder: (keys) => ListView(
-          padding: const EdgeInsets.only(bottom: 90),
+          padding: const EdgeInsets.only(bottom: 40),
           children: [
             IosSectionHeader('键（${keys.length}）'),
             IosCard(
