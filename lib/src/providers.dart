@@ -30,13 +30,25 @@ class AccountsNotifier extends StateNotifier<AccountsState> {
   }
 
   Future<void> _init() async {
-    var list = await AccountStore.load();
-    var sel = await AccountStore.selected();
-    if (list.isEmpty) {
-      list = List<Account>.from(kDefaultAccounts);
-      await AccountStore.save(list);
-      sel = list.first.id;
-      await AccountStore.setSelected(sel);
+    List<Account> list;
+    String? sel;
+    try {
+      list = await AccountStore.load();
+      sel = await AccountStore.selected();
+    } catch (_) {
+      // 存储读取失败时仍进入页面，不无限转圈
+      list = [];
+      sel = null;
+    }
+    try {
+      if (list.isEmpty) {
+        list = List<Account>.from(kDefaultAccounts);
+        await AccountStore.save(list);
+        sel = list.first.id;
+        await AccountStore.setSelected(sel);
+      }
+    } catch (_) {
+      // 首次写入失败不阻塞进入页面
     }
     if (!mounted) return;
     state = AccountsState(accounts: list, selectedId: sel, loading: false);
