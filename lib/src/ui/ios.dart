@@ -21,9 +21,9 @@ class Ios {
   static const grayDark = Color(0xFFAAB4C6);
 
   // 玻璃拟态用色
-  static const bgStart = Color(0xFFEAF2FF); // 背景渐变起点（柔蓝）
-  static const bgMid = Color(0xFFF6F9FF); // 背景渐变中间
-  static const bgEnd = Color(0xFFFDFEFF); // 背景渐变终点（白）
+  static const bgStart = Color(0xFFF3F6FB); // 背景渐变起点（极淡蓝）
+  static const bgMid = Color(0xFFF7F9FC); // 背景渐变中间
+  static const bgEnd = Color(0xFFFBFCFE); // 背景渐变终点（近白）
   static const card = Color(0xE6FFFFFF); // 半透明白卡片（froasted）
   static const cardBorder = Color(0x55FFFFFF); // 卡片描边（半透明白）
   static const cardShadow = Color(0x1A6C87B8); // 柔和阴影
@@ -38,8 +38,8 @@ class Ios {
   static const fill = Color(0x26FFFFFF);
   static const fillDark = Color(0x22FFFFFF);
 
-  static const radius = 18.0; // 大圆角
-  static const cardPadding = 18.0;
+  static const radius = 12.0; // 桌面软件适中圆角
+  static const cardPadding = 16.0;
 
   // 玻璃渐变色
   static const glassGradient = LinearGradient(
@@ -452,35 +452,18 @@ class IosButton extends StatelessWidget {
 
     return SizedBox(
       width: double.infinity,
-      height: 52,
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          gradient: const LinearGradient(
-            begin: Alignment.centerLeft,
-            end: Alignment.centerRight,
-            colors: [Ios.orange, Color(0xFFFFA63D)],
-          ),
-          borderRadius: BorderRadius.circular(Ios.radius),
-          boxShadow: [
-            BoxShadow(
-              color: Ios.orange.withValues(alpha: 0.4),
-              blurRadius: 16,
-              offset: const Offset(0, 6),
-            ),
-          ],
+      height: 48,
+      child: FilledButton(
+        style: FilledButton.styleFrom(
+          backgroundColor: Ios.blue,
+          disabledBackgroundColor: Ios.blue.withValues(alpha: 0.4),
+          foregroundColor: Colors.white,
+          elevation: 0,
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(Ios.radius)),
         ),
-        child: FilledButton(
-          style: FilledButton.styleFrom(
-            backgroundColor: Colors.transparent,
-            foregroundColor: Colors.white,
-            disabledBackgroundColor: Colors.transparent,
-            elevation: 0,
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(Ios.radius)),
-          ),
-          onPressed: busy ? null : onPressed,
-          child: child,
-        ),
+        onPressed: busy ? null : onPressed,
+        child: child,
       ),
     );
   }
