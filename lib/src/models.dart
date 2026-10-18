@@ -454,4 +454,52 @@ class Member {
       );
 }
 
+/// Cloudflare Tunnel（cfd_tunnel / cloudflared）
+class CftTunnel {
+  final String id;
+  final String name;
+  final String status;
+  final String? createdAt;
+  final String? deletedAt;
+  final String? connectionState; // 'connected' | 'disconnected' | 'degraded' | ...
+  final int? connectionsActive;
+  final String? accountTag;
+  const CftTunnel({
+    required this.id,
+    required this.name,
+    required this.status,
+    this.createdAt,
+    this.deletedAt,
+    this.connectionState,
+    this.connectionsActive,
+    this.accountTag,
+  });
+
+  factory CftTunnel.fromJson(Map<String, dynamic> j) {
+    int active = 0;
+    final conns = j['conns'];
+    if (conns is List) {
+      active = conns.where((c) {
+        final m = (c as Map?)?.cast<String, dynamic>();
+        return m?['pending_cleanup'] != true;
+      }).length;
+    }
+    return CftTunnel(
+      id: (j['id'] ?? '') as String,
+      name: (j['name'] ?? '') as String,
+      status: (j['status'] ?? '') as String,
+      createdAt: j['created_at'] as String?,
+      deletedAt: j['deleted_at'] as String?,
+      connectionState: j['connection']['status'] ?? j['status'] as String?,
+      connectionsActive: active,
+      accountTag: j['account_tag'] as String?,
+    );
+  }
+
+  bool get healthy =>
+      connectionState == 'connected' ||
+      connectionState == 'associated' ||
+      status == 'healthy';
+}
+
 
