@@ -99,24 +99,11 @@ class _LoginPageState extends State<LoginPage> {
           padding: const EdgeInsets.all(32),
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 400),
-            child: Container(
-              padding: const EdgeInsets.all(32),
-              decoration: BoxDecoration(
-                color: isLight ? Colors.white : const Color(0xFF16202F),
-                borderRadius: BorderRadius.circular(14),
-                border: Border.all(
-                  color: isLight
-                      ? const Color(0x14000000)
-                      : const Color(0x14FFFFFF),
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: isLight ? 0.08 : 0.3),
-                    blurRadius: 40,
-                    offset: const Offset(0, 16),
-                  ),
-                ],
-              ),
+            child: GlassPanel(
+              radius: 20,
+              blur: 24,
+              child: Padding(
+                padding: const EdgeInsets.all(32),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 mainAxisSize: MainAxisSize.min,
@@ -244,6 +231,7 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ),
                 ],
+              ),
               ),
             ),
           ),
