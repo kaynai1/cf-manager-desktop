@@ -15,55 +15,55 @@ class R2Page extends ConsumerWidget {
       appBar: AppBar(
         title: const Text('R2 对象存储'),
         actions: [
+          IosPageAction(
+            label: '新建存储桶',
+            icon: Icons.add,
+            onPressed: () async {
+              final name = TextEditingController();
+              final ok = await showDialog<bool>(
+                context: context,
+                builder: (ctx) => AlertDialog(
+                  title: const Text('新建存储桶'),
+                  content: TextField(
+                    controller: name,
+                    decoration: const InputDecoration(labelText: '桶名'),
+                  ),
+                  actions: [
+                    TextButton(
+                        onPressed: () => Navigator.pop(ctx, false),
+                        child: const Text('取消')),
+                    TextButton(
+                        onPressed: () => Navigator.pop(ctx, true),
+                        child: const Text('创建')),
+                  ],
+                ),
+              );
+              if (ok == true && name.text.trim().isNotEmpty) {
+                final api = ref.read(apiProvider);
+                if (api == null) return;
+                try {
+                  await api.createR2Bucket(accountId, name.text.trim());
+                  ref.invalidate(r2Provider(accountId));
+                } catch (e) {
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context)
+                        .showSnackBar(SnackBar(content: Text('$e')));
+                  }
+                }
+              }
+            },
+          ),
           IconButton(
             icon: const Icon(Icons.refresh),
+            tooltip: '刷新',
             onPressed: () => ref.invalidate(r2Provider(accountId)),
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Ios.orange,
-        foregroundColor: Colors.white,
-        onPressed: () async {
-          final name = TextEditingController();
-          final ok = await showDialog<bool>(
-            context: context,
-            builder: (ctx) => AlertDialog(
-              title: const Text('新建存储桶'),
-              content: TextField(
-                controller: name,
-                decoration: const InputDecoration(labelText: '桶名'),
-              ),
-              actions: [
-                TextButton(
-                    onPressed: () => Navigator.pop(ctx, false),
-                    child: const Text('取消')),
-                TextButton(
-                    onPressed: () => Navigator.pop(ctx, true),
-                    child: const Text('创建')),
-              ],
-            ),
-          );
-          if (ok == true && name.text.trim().isNotEmpty) {
-            final api = ref.read(apiProvider);
-            if (api == null) return;
-            try {
-              await api.createR2Bucket(accountId, name.text.trim());
-              ref.invalidate(r2Provider(accountId));
-            } catch (e) {
-              if (context.mounted) {
-                ScaffoldMessenger.of(context)
-                    .showSnackBar(SnackBar(content: Text('$e')));
-              }
-            }
-          }
-        },
-        child: const Icon(Icons.add),
-      ),
       body: AsyncView<List<R2Bucket>>(
         value: ref.watch(r2Provider(accountId)),
         builder: (list) => ListView(
-          padding: const EdgeInsets.only(bottom: 90),
+          padding: const EdgeInsets.only(bottom: 40),
           children: [
             IosSectionHeader('存储桶（${list.length}）'),
             IosCard(
