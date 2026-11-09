@@ -1,0 +1,29 @@
+name: build-token-helper
+on:
+  push:
+    branches: [token-helper]
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build
+        run: dotnet build src/TokenHelper.csproj -c Release -o out/app
+      - name: Package
+        shell: pwsh
+        run: |
+          $d = "dist/fnOS-CF-TokenHelper"
+          New-Item -ItemType Directory -Force $d | Out-Null
+          Get-ChildItem out/app -Recurse -File | Where-Object { $_.Extension -notin '.pdb','.xml' } | ForEach-Object {
+            $rel = $_.FullName.Substring((Resolve-Path out/app).Path.Length + 1)
+            $t = Join-Path $d $rel; New-Item -ItemType Directory -Force (Split-Path $t) | Out-Null; Copy-Item $_.FullName $t
+          }
+          Copy-Item "README-zh.txt" "$d/说明.txt"
+          Get-ChildItem $d -Recurse -File | ForEach-Object { "{0}  {1}  {2}" -f (Get-FileHash $_.FullName -Algorithm SHA256).Hash, $_.Length, $_.FullName.Substring((Resolve-Path $d).Path.Length + 1) } | Tee-Object "$d/SHA256.txt"
+          Get-ChildItem $d -Recurse -Filter *.dll | ForEach-Object { $s = Get-AuthenticodeSignature $_.FullName; "{0}  {1}  {2}" -f $_.Name, $s.Status, $s.SignerCertificate.Subject }
+          Compress-Archive -Path $d -DestinationPath dist/fnOS-CF-TokenHelper-v1.3.0.zip
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fnOS-CF-TokenHelper-v1.3.0
+          path: dist/fnOS-CF-TokenHelper-v1.3.0.zip

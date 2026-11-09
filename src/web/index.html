@@ -1,0 +1,328 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><title>{{APPNAME}}</title>
+<style>
+:root{
+  --bg:#f3f3f3;--side:#f7f7f7;--card:#fff;--line:#e8e8e8;--line2:#efefef;
+  --text:#1a1a1a;--sub:#6b6b6b;--mute:#9a9a9a;
+  --blue:#0067c0;--blueH:#1975c5;--blueP:#3183ca;--blueBg:#e8f1fb;
+  --green:#0f7b0f;--greenBg:#e6f4e6;--red:#c42b1c;--redBg:#fde7e9;--orange:#c75a00;--orangeBg:#fff1e0;
+}
+*{box-sizing:border-box;-webkit-user-select:none;user-select:none}
+html,body{height:100%;margin:0;overflow:hidden}
+body{background:var(--bg);color:var(--text);font:13px/1.45 "Segoe UI Variable Text","Segoe UI","Microsoft YaHei UI","Microsoft YaHei",sans-serif}
+button{font:inherit;color:inherit}
+.app{display:grid;grid-template-columns:200px 1fr 300px;grid-template-rows:1fr 26px;height:100%;border-top:1px solid var(--line)}
+@media (max-width:1100px){.app{grid-template-columns:190px 1fr}.right{display:none!important}}
+
+/* sidebar */
+.side{background:var(--side);border-right:1px solid var(--line);display:flex;flex-direction:column;padding:12px 8px 10px}
+.brand{display:flex;align-items:center;gap:10px;padding:4px 10px 14px}
+.brand img{width:28px;height:28px}
+.brand b{font-size:14.5px;font-weight:600;display:block;line-height:1.2}
+.brand span{font-size:11px;color:var(--mute)}
+.grp{font-size:11.5px;color:var(--mute);padding:12px 12px 6px}
+.nav{display:flex;align-items:center;gap:10px;height:38px;padding:0 12px;border-radius:6px;cursor:default;color:#333;position:relative;margin-bottom:2px;border:1px solid transparent}
+.nav:hover{background:rgba(0,0,0,.04)}
+.nav.on{background:#fff;border-color:var(--line);box-shadow:0 1px 2px rgba(0,0,0,.04);color:var(--blue);font-weight:600}
+.nav.on::before{content:"";position:absolute;left:-1px;top:11px;bottom:11px;width:3px;border-radius:2px;background:var(--blue)}
+.nav svg{width:16px;height:16px;flex:none}
+.nav .cnt{margin-left:auto;font-size:11.5px;color:var(--blue);font-weight:600}
+.nav .hot{margin-left:auto;font-size:10.5px;color:var(--green);background:var(--greenBg);padding:1px 6px;border-radius:3px;font-weight:600}
+.sidefoot{margin-top:auto;border-top:1px solid var(--line);padding:10px 12px 0;font-size:11.5px;color:var(--mute)}
+.sidefoot div{color:#555;word-break:break-all;margin-top:2px;cursor:default}
+.sidefoot div:hover{color:var(--blue)}
+
+/* main */
+.main{overflow:auto;padding:16px 16px 18px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.main::-webkit-scrollbar,.right::-webkit-scrollbar{width:8px}.main::-webkit-scrollbar-thumb,.right::-webkit-scrollbar-thumb{background:#cfcfcf;border-radius:4px;border:2px solid var(--bg)}
+.ptitle{display:flex;align-items:flex-end;justify-content:space-between;padding:2px 2px 0}
+.ptitle h2{margin:0;font:600 20px/1.2 "Segoe UI Variable Display","Segoe UI","Microsoft YaHei UI",sans-serif}
+.ptitle p{margin:3px 0 0;color:var(--sub);font-size:12px}
+.tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.tile{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:12px 14px 12px}
+.tile .k{font-size:12px;color:var(--sub)}
+.tile .v{font:600 24px/1.25 "Segoe UI Variable Display","Segoe UI","Microsoft YaHei UI",sans-serif;margin:6px 0 4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tile .v.mono{font:600 17px/1.9 "Cascadia Mono",Consolas,monospace}
+.tile .s{font-size:11.5px;color:var(--mute);display:flex;align-items:center;gap:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--mute);flex:none}
+.dot.g{background:#13a10e}.dot.r{background:var(--red)}.dot.b{background:var(--blue)}
+
+.card{background:var(--card);border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.ch{display:flex;align-items:center;gap:10px;padding:12px 14px 10px}
+.ch .t b{font-size:14px;font-weight:600;display:block}
+.ch .t b .en{font-style:normal;font-weight:400;color:var(--mute);font-size:12.5px;margin-left:4px}
+.ch .t span{font-size:12px;color:var(--sub)}
+.ch .r{margin-left:auto;display:flex;gap:8px;align-items:center}
+.cnum{font-size:12px;color:var(--sub)}
+
+.btn{height:32px;padding:0 14px;border-radius:5px;border:1px solid #e0e0e0;border-bottom-color:#cdcdcd;background:#fbfbfb;display:inline-flex;align-items:center;gap:7px;cursor:default;font-weight:600;font-size:12.5px;white-space:nowrap}
+.btn:hover{background:#f5f5f5}.btn:active{background:#f0f0f0;color:#666}
+.btn svg{width:14px;height:14px}
+.btn.pri{background:var(--blue);border-color:var(--blue);border-bottom-color:#003e73;color:#fff}
+.btn.pri:hover{background:var(--blueH)}.btn.pri:active{background:var(--blueP);color:rgba(255,255,255,.85)}
+.btn.lg{height:38px;padding:0 22px;font-size:13.5px}
+.seg{display:inline-flex;background:#f3f3f3;border:1px solid var(--line);border-radius:6px;padding:2px}
+.lnk{background:none;border:0;color:var(--blue);cursor:default;padding:2px 4px;border-radius:4px;font-size:12px}
+.lnk:hover{background:var(--blueBg)}
+
+.tokwrap{padding:0 14px 14px}
+.tok{display:flex;align-items:stretch;border:1px solid var(--line);border-radius:6px;background:#fafafa;overflow:hidden}
+.tok .v{flex:1;padding:12px 14px;font:14px/1.5 "Cascadia Mono",Consolas,monospace;word-break:break-all;color:#111;-webkit-user-select:text;user-select:text;letter-spacing:.2px}
+.tok .v.blur{filter:blur(5px)}
+.ib{width:42px;border:0;border-left:1px solid var(--line);background:transparent;display:grid;place-items:center;cursor:default;color:#444}
+.ib:hover{background:#f0f0f0}.ib svg{width:16px;height:16px}
+.hint{font-size:11.5px;color:var(--mute);margin-top:7px;display:flex;gap:6px;align-items:center}
+.hint svg{width:13px;height:13px}
+
+.empty{text-align:center;padding:26px 20px 30px}
+.empty .ill{width:64px;height:64px;margin:0 auto 12px;border-radius:16px;background:var(--blueBg);display:grid;place-items:center;color:var(--blue)}
+.empty .ill svg{width:30px;height:30px}
+.empty b{display:block;font-size:15px;margin-bottom:4px}
+.empty p{color:var(--sub);font-size:12px;margin:0 0 16px}
+
+.rows .row{display:flex;align-items:center;gap:12px;padding:10px 14px;border-top:1px solid var(--line2)}
+.rows .row:hover{background:#fafafa}
+.rows .row .t{flex:1;min-width:0}
+.rows .row .t b{display:block;font-weight:500;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rows .row .t span{display:block;font-size:11.5px;color:var(--mute);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rows .row .t span.mono{font-family:"Cascadia Mono",Consolas,monospace;font-size:12px;color:#555}
+.rows .foot{padding:9px 14px;border-top:1px solid var(--line2);font-size:11.5px;color:var(--sub)}
+.pill{font-size:11px;padding:1px 7px;border-radius:3px;font-weight:600;white-space:nowrap}
+.pill.g{color:var(--green);background:var(--greenBg)}.pill.b{color:var(--blue);background:var(--blueBg)}.pill.r{color:var(--red);background:var(--redBg)}.pill.o{color:var(--orange);background:var(--orangeBg)}.pill.n{color:#555;background:#f0f0f0}
+.pic{width:30px;height:30px;border-radius:7px;display:grid;place-items:center;flex:none}
+.pic svg{width:16px;height:16px}
+.pic.o{background:var(--orangeBg);color:#e8740c}.pic.b{background:var(--blueBg);color:var(--blue)}
+.mini{width:28px;height:28px;border:1px solid transparent;background:transparent;border-radius:5px;display:grid;place-items:center;cursor:default;color:#555}
+.mini:hover{background:#f0f0f0;border-color:var(--line)}.mini svg{width:14px;height:14px}
+.val{font-weight:600;color:var(--green);font-size:13px}
+
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:1250px){.two{grid-template-columns:1fr}}
+
+/* right */
+.right{border-left:1px solid var(--line);background:var(--bg);overflow:auto;padding:16px 12px 16px 0;display:flex;flex-direction:column;gap:12px}
+.right .card{margin-left:12px}
+.acct{display:flex;align-items:center;gap:11px;margin:4px 10px 10px;padding:10px 12px;border-radius:7px;background:var(--blueBg);border:1px solid #cfe2f6}
+.acct.off{background:#f7f7f7;border-color:var(--line)}
+.ava{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:700;font-size:15px;background:linear-gradient(135deg,#f6a13a,#e8640c);flex:none}
+.acct.off .ava{background:#c8c8c8}
+.acct .t{flex:1;min-width:0}.acct .t b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.acct .t span{font-size:11.5px;color:var(--sub);font-family:"Cascadia Mono",Consolas,monospace}
+.st{font-size:11px;color:var(--green);display:flex;align-items:center;gap:4px;white-space:nowrap}
+.acct.off .st{color:var(--mute)}
+.cardfoot{padding:9px 14px;border-top:1px solid var(--line2);font-size:11.5px;color:var(--mute);display:flex;align-items:center}
+.cardfoot .lnk{margin-left:auto}
+.steps{padding:2px 14px 12px;counter-reset:s}
+.steps div{display:flex;gap:10px;padding:6px 0;font-size:12.5px;color:#333}
+.steps div::before{counter-increment:s;content:counter(s);width:20px;height:20px;border-radius:50%;background:var(--blueBg);color:var(--blue);font-weight:700;font-size:11px;display:grid;place-items:center;flex:none}
+.logrow{display:flex;align-items:center;gap:10px;padding:8px 14px;border-top:1px solid var(--line2)}
+.logrow .t{flex:1;min-width:0}
+.logrow .t b{display:block;font-weight:400;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.logrow .t span{font-size:11px;color:var(--mute);font-family:"Cascadia Mono",Consolas,monospace}
+.nolog{padding:18px 14px;text-align:center;color:var(--mute);font-size:12px}
+
+/* history table */
+table{width:100%;border-collapse:collapse}
+th{font-weight:600;font-size:12px;color:var(--sub);text-align:left;padding:9px 14px;border-top:1px solid var(--line2);background:#fafafa}
+td{padding:10px 14px;border-top:1px solid var(--line2);font-size:12.5px}
+td.mono{font-family:"Cascadia Mono",Consolas,monospace;font-size:12px;color:#444}
+.faq{padding:4px 14px 14px}
+.faq b{display:block;margin:10px 0 3px;font-size:13px}
+.faq p{margin:0;color:var(--sub);font-size:12.5px}
+
+.status{grid-column:1/-1;background:var(--side);border-top:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 12px;font-size:11.5px;color:var(--sub)}
+.err{display:flex;gap:10px;align-items:center;padding:10px 14px;border-radius:8px;background:var(--redBg);border:1px solid #f6cdd1;color:#7a1a12;font-size:12.5px}
+.err svg{width:16px;height:16px;color:var(--red);flex:none}
+.toast{position:fixed;left:50%;bottom:44px;transform:translate(-50%,16px);opacity:0;background:#1f1f1f;color:#fff;font-size:12.5px;padding:8px 16px;border-radius:6px;transition:.18s;pointer-events:none;display:flex;gap:8px;align-items:center;box-shadow:0 6px 18px rgba(0,0,0,.2)}
+.toast svg{width:14px;height:14px;color:#6ccb5f}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+.view{display:none;flex-direction:column;gap:12px}.view.on{display:flex}
+.hide{display:none!important}
+</style></head><body>
+<svg width="0" height="0" style="position:absolute">
+<symbol id="i-home" viewBox="0 0 16 16"><path fill="currentColor" d="M2 3a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1v3.5a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3Zm1 0v3.5h3.5V3H3Zm5.5 0a1 1 0 0 1 1-1H13a1 1 0 0 1 1 1v3.5a1 1 0 0 1-1 1H9.5a1 1 0 0 1-1-1V3Zm1 0v3.5H13V3H9.5ZM2 9.5a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1V13a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V9.5Zm1 0V13h3.5V9.5H3Zm5.5 0a1 1 0 0 1 1-1H13a1 1 0 0 1 1 1V13a1 1 0 0 1-1 1H9.5a1 1 0 0 1-1-1V9.5Zm1 0V13H13V9.5H9.5Z"/></symbol>
+<symbol id="i-hist" viewBox="0 0 16 16"><path fill="currentColor" d="M8 2a6 6 0 1 1-5.9 7.1.5.5 0 1 1 1-.2A5 5 0 1 0 4.2 4.8H6a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5v-3a.5.5 0 0 1 1 0v1.6A6 6 0 0 1 8 2Zm-.5 2.5a.5.5 0 0 1 1 0v3.3l2.1 1.3a.5.5 0 1 1-.5.8L7.7 8.4a.5.5 0 0 1-.2-.4V4.5Z"/></symbol>
+<symbol id="i-book" viewBox="0 0 16 16"><path fill="currentColor" d="M3 2.5A1.5 1.5 0 0 1 4.5 1H12a1 1 0 0 1 1 1v10.5a.5.5 0 0 1-.5.5H4.5a.5.5 0 0 0 0 1h8a.5.5 0 0 1 0 1h-8A1.5 1.5 0 0 1 3 13.5v-11ZM4.5 2a.5.5 0 0 0-.5.5v9.6c.16-.06.33-.1.5-.1H12V2H4.5Zm1 2h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1 0-1Z"/></symbol>
+<symbol id="i-cloud" viewBox="0 0 16 16"><path fill="currentColor" d="M8 3a4 4 0 0 1 3.9 3.1A3 3 0 0 1 11.5 12h-7A3.5 3.5 0 0 1 4.2 5 4 4 0 0 1 8 3Zm0 1a3 3 0 0 0-2.9 2.3.5.5 0 0 1-.5.4A2.5 2.5 0 0 0 4.5 11h7a2 2 0 0 0 .2-4 .5.5 0 0 1-.5-.4A3 3 0 0 0 8 4Z"/></symbol>
+<symbol id="i-copy" viewBox="0 0 16 16"><path fill="currentColor" d="M5 2.5A1.5 1.5 0 0 1 6.5 1h6A1.5 1.5 0 0 1 14 2.5v8a1.5 1.5 0 0 1-1.5 1.5h-6A1.5 1.5 0 0 1 5 10.5v-8Zm1.5-.5a.5.5 0 0 0-.5.5v8a.5.5 0 0 0 .5.5h6a.5.5 0 0 0 .5-.5v-8a.5.5 0 0 0-.5-.5h-6ZM3 4.5a.5.5 0 0 1 1 0v8c0 .83.67 1.5 1.5 1.5h5a.5.5 0 0 1 0 1h-5A2.5 2.5 0 0 1 3 12.5v-8Z"/></symbol>
+<symbol id="i-eye" viewBox="0 0 16 16"><path fill="currentColor" d="M8 3.5c3 0 5.3 2 6.4 4.3a.5.5 0 0 1 0 .4C13.3 10.5 11 12.5 8 12.5S2.7 10.5 1.6 8.2a.5.5 0 0 1 0-.4C2.7 5.5 5 3.5 8 3.5Zm0 1C5.6 4.5 3.7 6 2.6 8c1.1 2 3 3.5 5.4 3.5S12.3 10 13.4 8C12.3 6 10.4 4.5 8 4.5ZM8 6a2 2 0 1 1 0 4 2 2 0 0 1 0-4Zm0 1a1 1 0 1 0 0 2 1 1 0 0 0 0-2Z"/></symbol>
+<symbol id="i-err" viewBox="0 0 16 16"><path fill="currentColor" d="M8 1a7 7 0 1 1 0 14A7 7 0 0 1 8 1Zm0 9.5a.75.75 0 1 0 0 1.5.75.75 0 0 0 0-1.5ZM8 4a.6.6 0 0 0-.6.6v4.2a.6.6 0 0 0 1.2 0V4.6A.6.6 0 0 0 8 4Z"/></symbol>
+<symbol id="i-ok" viewBox="0 0 16 16"><path fill="currentColor" d="M13.4 4.1a.6.6 0 0 1 0 .8l-6.5 6.5a.6.6 0 0 1-.8 0L2.6 8a.6.6 0 1 1 .8-.8l3.1 3 6.1-6.1a.6.6 0 0 1 .8 0Z"/></symbol>
+<symbol id="i-shield" viewBox="0 0 16 16"><path fill="currentColor" d="M8 1 2.5 3v4.2c0 3.4 2.3 6.4 5.5 7.8 3.2-1.4 5.5-4.4 5.5-7.8V3L8 1Zm0 1.1 4.5 1.6v3.5c0 2.8-1.8 5.4-4.5 6.7-2.7-1.3-4.5-3.9-4.5-6.7V3.7L8 2.1Z"/></symbol>
+<symbol id="i-tunnel" viewBox="0 0 16 16"><path fill="currentColor" d="M8 2a6 6 0 0 0-6 6v5.5a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5V10a2 2 0 1 1 4 0v3.5a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5V8a6 6 0 0 0-6-6Z"/></symbol>
+<symbol id="i-dns" viewBox="0 0 16 16"><path fill="currentColor" d="M8 1a7 7 0 1 0 0 14A7 7 0 0 0 8 1Zm4.9 6.5h-2.4a10.6 10.6 0 0 0-.9-4.6 6 6 0 0 1 3.3 4.6ZM8 2.1c.6.8 1.4 2.6 1.5 5.4h-3c.1-2.8.9-4.6 1.5-5.4ZM6.4 2.9a10.6 10.6 0 0 0-.9 4.6H3.1a6 6 0 0 1 3.3-4.6ZM3.1 8.5h2.4c.1 1.9.4 3.4.9 4.6a6 6 0 0 1-3.3-4.6ZM8 13.9c-.6-.8-1.4-2.6-1.5-5.4h3c-.1 2.8-.9 4.6-1.5 5.4Zm1.6-.8c.5-1.2.8-2.7.9-4.6h2.4a6 6 0 0 1-3.3 4.6Z"/></symbol>
+<symbol id="i-save" viewBox="0 0 16 16"><path fill="currentColor" d="M3.5 2h7.3c.4 0 .78.16 1.06.44l1.7 1.7c.28.28.44.66.44 1.06v7.3a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 2 12.5v-9A1.5 1.5 0 0 1 3.5 2ZM5 3v2.5c0 .28.22.5.5.5h4a.5.5 0 0 0 .5-.5V3H5Zm-1 10h8V9.5a.5.5 0 0 0-.5-.5h-7a.5.5 0 0 0-.5.5V13Z"/></symbol>
+<symbol id="i-redo" viewBox="0 0 16 16"><path fill="currentColor" d="M8 2.5a5.5 5.5 0 0 1 4.6 2.5H10.5a.5.5 0 0 0 0 1h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-1 0v1.5A6.5 6.5 0 1 0 14.5 8a.5.5 0 0 0-1 0A5.5 5.5 0 1 1 8 2.5Z"/></symbol>
+<symbol id="i-key" viewBox="0 0 16 16"><path fill="currentColor" d="M10.5 1.5a4 4 0 0 0-3.8 5.3L2.15 11.35a.5.5 0 0 0-.15.35v2.3c0 .28.22.5.5.5h2a.5.5 0 0 0 .5-.5V13h1a.5.5 0 0 0 .5-.5V11.5h1a.5.5 0 0 0 .35-.15l.94-.94A4 4 0 1 0 10.5 1.5Zm1 2.25a.75.75 0 1 1 0 1.5.75.75 0 0 1 0-1.5Z"/></symbol>
+<symbol id="i-swap" viewBox="0 0 16 16"><path fill="currentColor" d="M10.85 1.65a.5.5 0 0 0-.7.7L11.29 3.5H4.5a.5.5 0 0 0 0 1h6.79l-1.14 1.15a.5.5 0 1 0 .7.7l2-2a.5.5 0 0 0 0-.7l-2-2Zm-5 8a.5.5 0 0 0-.7 0l-2 2a.5.5 0 0 0 0 .7l2 2a.5.5 0 0 0 .7-.7L4.71 12.5h6.79a.5.5 0 0 0 0-1H4.71l1.14-1.15a.5.5 0 0 0 0-.7Z"/></symbol>
+<symbol id="i-ext" viewBox="0 0 16 16"><path fill="currentColor" d="M9 2.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-1 0V3.7L8.35 8.35a.5.5 0 1 1-.7-.7L12.3 3H9.5a.5.5 0 0 1-.5-.5ZM4 4a1 1 0 0 0-1 1v7a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1V9.5a.5.5 0 0 1 1 0V12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h2.5a.5.5 0 0 1 0 1H4Z"/></symbol>
+</svg>
+
+<div class="app">
+  <!-- sidebar -->
+  <aside class="side">
+    <div class="brand"><img src="{{LOGO}}" alt=""><div><b>令牌助手</b><span>fnOS · v{{VERSION}}</span></div></div>
+    <div class="grp">令牌</div>
+    <div class="nav on" data-v="home"><svg><use href="#i-home"/></svg>概览</div>
+    <div class="nav" data-v="hist"><svg><use href="#i-hist"/></svg>生成记录<span class="cnt" id="histCnt"></span></div>
+    <div class="grp">帮助</div>
+    <div class="nav" data-v="help"><svg><use href="#i-book"/></svg>使用说明<span class="hot">新手</span></div>
+    <div class="nav" onclick="appOpenTokens()"><svg><use href="#i-cloud"/></svg>Cloudflare 控制台<svg style="margin-left:auto;width:12px;height:12px;color:#999"><use href="#i-ext"/></svg></div>
+    <div class="sidefoot">数据目录<div id="dataDir" onclick="appOpenDir()" title="打开文件夹"></div></div>
+  </aside>
+
+  <!-- main -->
+  <main class="main">
+    <div id="errBox"></div>
+
+    <!-- overview -->
+    <section class="view on" id="v-home">
+      <div class="tiles">
+        <div class="tile"><div class="k">令牌状态</div><div class="v" id="tState">未生成</div><div class="s" id="tStateS"><span class="dot"></span>尚未登录 Cloudflare</div></div>
+        <div class="tile"><div class="k">令牌名称</div><div class="v" id="tName">fnOS</div><div class="s"><span class="dot b"></span>固定名称</div></div>
+        <div class="tile"><div class="k">账户 ID</div><div class="v mono" id="tAcc">—</div><div class="s" id="tAccS">登录后自动读取</div></div>
+        <div class="tile"><div class="k">有效期</div><div class="v">永久</div><div class="s"><span class="dot g"></span>不过期，可随时删除</div></div>
+      </div>
+
+      <div class="card">
+        <div class="ch"><div class="t"><b>API 令牌 <em class="en">API Token</em></b><span>粘贴到飞牛 fnOS 的 Kay-cftunnle 应用</span></div>
+          <div class="r" id="tokBtns">
+            <button class="btn" onclick="save()"><svg><use href="#i-save"/></svg>保存到桌面</button>
+            <button class="btn pri" onclick="appLogin(false)"><svg><use href="#i-redo"/></svg>重新生成</button>
+          </div></div>
+        <div class="tokwrap" id="tokFull">
+          <div class="tok"><div class="v" id="tok"></div>
+            <button class="ib" title="显示 / 隐藏" onclick="$('tok').classList.toggle('blur')"><svg><use href="#i-eye"/></svg></button>
+            <button class="ib" title="复制令牌" onclick="copy($('tok').textContent,'令牌已复制')"><svg><use href="#i-copy"/></svg></button></div>
+          <div class="hint" id="savedHint"><svg><use href="#i-shield"/></svg>令牌只在创建时显示一次，关掉软件后无法再看到，请先复制或保存。</div>
+        </div>
+        <div class="empty" id="tokEmpty">
+          <div class="ill"><svg><use href="#i-key"/></svg></div>
+          <b>还没有令牌</b>
+          <p>登录你的 Cloudflare 账号，自动创建名为「fnOS」的令牌，并读取账户 ID。<br>人机验证、两步验证在官方页面照常完成，本软件不保存密码。</p>
+          <button class="btn pri lg" onclick="appLogin(false)"><svg><use href="#i-key"/></svg>登录 Cloudflare 并生成</button>
+          <div style="margin-top:8px"><button class="lnk" onclick="appLogin(true)">还没有账号？免费注册</button></div>
+        </div>
+      </div>
+
+      <div class="two">
+        <div class="card">
+          <div class="ch"><div class="t"><b>账户 ID <em class="en">Account ID</em></b><span>部分飞牛 Kay-cftunnle 配置需要填写</span></div><div class="r"><span class="cnum" id="accCnt"></span></div></div>
+          <div class="rows" id="accRows"></div>
+        </div>
+        <div class="card">
+          <div class="ch"><div class="t"><b>权限明细</b><span>和在 Cloudflare 手动创建的完全一致</span></div></div>
+          <div class="rows">
+            <div class="row"><div class="pic o"><svg><use href="#i-tunnel"/></svg></div><div class="t"><b>Cloudflare Tunnel</b><span>账户策略 · 包含所有账户</span></div><span class="pill g">编辑</span></div>
+            <div class="row"><div class="pic b"><svg><use href="#i-dns"/></svg></div><div class="t"><b>DNS</b><span>区域策略 · 包含所有区域</span></div><span class="pill g">编辑</span></div>
+            <div class="foot">客户端 IP 不限 · TTL 不限 · 名称固定为 fnOS</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- history -->
+    <section class="view" id="v-hist">
+      <div class="ptitle"><div><h2>生成记录</h2><p>本机生成过的令牌。出于安全只保存尾号，完整令牌请在生成时保存。</p></div>
+        <button class="btn" onclick="clearLog()">清空记录</button></div>
+      <div class="card"><table><thead><tr><th>时间</th><th>名称</th><th>账户</th><th>账户 ID</th><th>令牌尾号</th></tr></thead><tbody id="histBody"></tbody></table>
+        <div class="nolog hide" id="histEmpty">还没有生成记录</div></div>
+    </section>
+
+    <!-- help -->
+    <section class="view" id="v-help">
+      <div class="ptitle"><div><h2>使用说明</h2><p>三步把飞牛 NAS 接入 Cloudflare Tunnel</p></div></div>
+      <div class="card"><div class="ch"><div class="t"><b>操作步骤</b></div></div>
+        <div class="steps">
+          <div>点「登录 Cloudflare 并生成」，在弹出的官方页面登录（没有账号先免费注册）。</div>
+          <div>登录后软件会自动勾选权限并创建令牌，完成后回到概览页。</div>
+          <div>复制 API 令牌（需要时再复制账户 ID），粘贴到飞牛 fnOS 的 Kay-cftunnle 应用里保存即可。</div>
+        </div></div>
+      <div class="card"><div class="ch"><div class="t"><b>常见问题</b></div></div>
+        <div class="faq">
+          <b>登录后没有自动继续？</b><p>在页面上手动点「继续以显示摘要」→「创建令牌」，软件会自动读取生成的令牌。</p>
+          <b>令牌丢了怎么办？</b><p>Cloudflare 不会再次显示旧令牌。点「重新生成」创建新的，再到 Cloudflare 控制台删除旧的。</p>
+          <b>想换一个 Cloudflare 账号？</b><p>右侧「Cloudflare 账号」里点「切换账号」，退出后用新账号登录。</p>
+          <b>提示缺少 WebView2？</b><p>到微软官网安装「Microsoft Edge WebView2 Runtime」，Windows 10/11 一般已自带。</p>
+        </div></div>
+    </section>
+  </main>
+
+  <!-- right -->
+  <aside class="right">
+    <div class="card">
+      <div class="ch"><div class="t"><b>Cloudflare 账号</b></div><div class="r"><span class="cnum" id="acctTag">未登录</span></div></div>
+      <div class="acct off" id="acct"><div class="ava" id="ava">?</div><div class="t"><b id="acctName">尚未登录</b><span id="acctId">登录后显示</span></div><span class="st"><span class="dot"></span><i id="acctSt" style="font-style:normal">离线</i></span></div>
+      <div class="cardfoot">登录信息只保存在本机<button class="lnk" onclick="appSwitch()">切换账号</button></div>
+    </div>
+    <div class="card">
+      <div class="ch"><div class="t"><b>填到飞牛</b></div></div>
+      <div class="steps">
+        <div>打开 fnOS 应用中心里的 Kay-cftunnle</div>
+        <div>粘贴 API 令牌（需要时填账户 ID）</div>
+        <div>保存并启动，隧道即上线</div>
+      </div>
+    </div>
+    <div class="card" style="flex:1;min-height:180px;display:flex;flex-direction:column">
+      <div class="ch"><div class="t"><b>最近操作</b></div><div class="r"><span class="pill n" id="logCnt">0 条</span></div></div>
+      <div id="logRows" style="overflow:auto;flex:1"></div>
+    </div>
+  </aside>
+
+  <div class="status"><span id="stLeft">就绪</span><span>fnOS 令牌助手 v{{VERSION}} · WebView2 · 本地运行</span></div>
+</div>
+<div class="toast" id="toast"><svg><use href="#i-ok"/></svg><span></span></div>
+
+<script>
+const $=i=>document.getElementById(i);
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+document.addEventListener('contextmenu',e=>{if(!e.target.closest('.tok .v'))e.preventDefault()});
+document.addEventListener('wheel',e=>{if(e.ctrlKey)e.preventDefault()},{passive:false});
+document.addEventListener('keydown',e=>{if((e.ctrlKey&&['+','-','=','0','p','f','r'].includes(e.key.toLowerCase()))||e.key==='F5')e.preventDefault()});
+let tt;function toast(m){const t=$('toast');t.querySelector('span').textContent=m;t.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('on'),1600)}
+function copy(v,m){navigator.clipboard.writeText(v).then(()=>toast(m),()=>toast('复制失败，请手动选中复制'))}
+document.querySelectorAll('.nav[data-v]').forEach(n=>n.onclick=()=>{document.querySelectorAll('.nav').forEach(x=>x.classList.remove('on'));n.classList.add('on');document.querySelectorAll('.view').forEach(v=>v.classList.remove('on'));$('v-'+n.dataset.v).classList.add('on')});
+const short=id=>id&&id.length>14?id.slice(0,6)+'…'+id.slice(-4):(id||'—');
+const kindPill={done:'<span class="pill g">完成</span>',info:'<span class="pill b">记录</span>',err:'<span class="pill r">失败</span>'};
+let S={};
+async function save(){try{const p=await appSave();$('savedHint').innerHTML='<svg><use href="#i-ok"/></svg>已保存到 '+esc(p)+' <button class="lnk" id="showF">在文件夹中显示</button>';$('showF').onclick=()=>appShowFile(p);toast('已保存到桌面');load()}catch(e){toast('保存失败：'+(e.message||e))}}
+async function clearLog(){await appClearLog();toast('记录已清空');load()}
+async function load(){
+  try{S=JSON.parse(await appState())}catch(e){S={}}
+  $('dataDir').textContent=S.dataDir||'';
+  if(S.tokenName)$('tName').textContent=S.tokenName;
+  $('errBox').innerHTML=S.error&&!S.token?'<div class="err"><svg><use href="#i-err"/></svg><div><b>自动生成没有完成：</b>'+esc(S.error)+'</div></div>':'';
+  const has=!!S.token;
+  $('tokFull').classList.toggle('hide',!has);$('tokBtns').classList.toggle('hide',!has);$('tokEmpty').classList.toggle('hide',has);
+  $('tok').textContent=S.token||'';
+  $('tState').textContent=has?'已生成':'未生成';
+  $('tStateS').innerHTML=has?'<span class="dot g"></span>本次会话 · 可复制':'<span class="dot"></span>尚未生成';
+  const accs=(S.accounts&&S.accounts.length?S.accounts:(S.knownAccounts||[]));
+  const cur=S.accountId||(accs[0]&&accs[0].id)||'';
+  $('tAcc').textContent=short(cur);$('tAcc').title=cur;
+  $('tAccS').innerHTML=cur?'<span class="dot g"></span>'+esc((accs.find(a=>a.id===cur)||{}).name||'已读取'):'登录后自动读取';
+  // account rows
+  $('accCnt').textContent=accs.length?accs.length+' 个':'';
+  $('accRows').innerHTML=accs.length?accs.map(a=>'<div class="row"><div class="t"><b>'+esc(a.name||'Cloudflare 账户')+'</b><span class="mono">'+esc(a.id)+'</span></div>'+(a.id===cur?'<span class="pill b">当前</span>':'')+'<button class="mini" title="复制账户 ID" data-id="'+esc(a.id)+'"><svg><use href="#i-copy"/></svg></button></div>').join('')
+    :'<div class="row"><div class="t"><b style="color:#9a9a9a;font-weight:400">还没有读取到</b><span>生成令牌时会自动读取；也可在 Cloudflare 首页网址 dash.cloudflare.com/&lt;账户ID&gt;/home 中找到</span></div></div>';
+  $('accRows').querySelectorAll('.mini').forEach(b=>b.onclick=()=>copy(b.dataset.id,'账户 ID 已复制'));
+  // account card
+  const a0=accs.find(a=>a.id===cur)||accs[0];
+  $('acct').classList.toggle('off',!a0);
+  $('acctName').textContent=a0?(a0.name||'Cloudflare 账户'):'尚未登录';
+  $('acctId').textContent=a0?short(a0.id):'登录后显示';
+  $('ava').textContent=a0?(a0.name||'C').trim().charAt(0).toUpperCase():'?';
+  $('acctSt').textContent=a0?(has?'已登录':'上次登录'):'离线';
+  $('acctTag').textContent=a0?'已关联':'未登录';
+  // log
+  const lg=S.log||[];$('logCnt').textContent=lg.length+' 条';
+  $('logRows').innerHTML=lg.length?lg.slice(0,30).map(l=>'<div class="logrow"><div class="t"><b title="'+esc(l.text)+'">'+esc(l.text)+'</b><span>'+esc(l.time)+'</span></div>'+(kindPill[l.kind]||kindPill.info)+'</div>').join(''):'<div class="nolog">暂无操作记录</div>';
+  // history
+  const h=S.history||[];$('histCnt').textContent=h.length||'';
+  $('histBody').innerHTML=h.map(x=>'<tr><td>'+esc(x.time)+'</td><td>'+esc(x.name)+'</td><td>'+esc(x.accountName||'—')+'</td><td class="mono">'+esc(x.accountId||'—')+'</td><td class="mono">…'+esc(x.tail)+'</td></tr>').join('');
+  $('histEmpty').classList.toggle('hide',h.length>0);
+  $('stLeft').textContent=has?'令牌已就绪 · 记得复制或保存':(h.length?'共 '+h.length+' 条生成记录':'就绪');
+}
+load();
+</script>
+</body></html>
