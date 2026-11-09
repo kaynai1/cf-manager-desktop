@@ -2,7 +2,7 @@
 ; 使用: ISCC.exe installer.iss
 
 #define MyAppName "Cloudflare 管理器"
-#define MyAppVersion "1.0.1"
+#define MyAppVersion "1.1.0"
 #define MyAppPublisher "Cloudflare Manager"
 #define MyAppExeName "cloudflare_manager.exe"
 

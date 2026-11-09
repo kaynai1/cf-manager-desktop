@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 
+import 'activity.dart';
+
 import 'models.dart';
 
 class CfException implements Exception {
@@ -68,7 +70,14 @@ class CfApi {
       final msg = errors.isNotEmpty
           ? (errors.first['message']?.toString() ?? '')
           : 'HTTP ${res.statusCode}';
+      if (method != 'GET') {
+        ActivityLog.instance
+            .add('${ActivityLog.describe(method, path)}失败', kind: 'fail');
+      }
       throw CfException(res.statusCode, msg);
+    }
+    if (method != 'GET') {
+      ActivityLog.instance.add(ActivityLog.describe(method, path));
     }
     return decoded['result'];
   }

@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'src/web_init_stub.dart'
     if (dart.library.html) 'src/web_init.dart';
 
+import 'src/activity.dart';
 import 'src/ui/ios.dart';
 import 'src/ui/login_page.dart';
 
@@ -18,17 +19,18 @@ Future<void> main() async {
   runApp(const ProviderScope(child: CfManagerApp()));
 }
 
-class CfManagerApp extends StatelessWidget {
+class CfManagerApp extends ConsumerWidget {
   const CfManagerApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final mode = ref.watch(themeModeProvider);
     return MaterialApp(
       title: 'Cloudflare 管理器',
       debugShowCheckedModeBanner: false,
       theme: IosTheme.light(),
       darkTheme: IosTheme.dark(),
-      themeMode: ThemeMode.system,
+      themeMode: mode,
       builder: (context, child) => GlassBackground(child: child!),
       home: const LoginGate(),
     );

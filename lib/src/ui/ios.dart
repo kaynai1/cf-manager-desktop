@@ -1,170 +1,107 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// ============================================================
-/// 现代玻璃拟态设计系统（Glassmorphism / 2026 Desktop）
-/// 蓝白柔和渐变 + 磨砂半透明卡片 + 深色磨砂侧栏
+/// Windows 11 风格桌面设计系统（扁平卡片 · 浅灰底 · 系统蓝）
+/// 类名沿用旧版（Ios*/Glass*），所有页面无需改调用即可换肤。
 /// ============================================================
 class Ios {
-  // ---- 品牌色 ----
-  static const blue = Color(0xFF3B6EF5); // 主蓝
-  static const blueDark = Color(0xFF2B56D4);
-  static const blueLight = Color(0xFF5B8DEF);
-  static const purple = Color(0xFF7C5CFF); // 蓝紫（选中发光）
-  static const green = Color(0xFF10B981);
+  // ---- 品牌色（Windows 11 系统强调色）----
+  static const blue = Color(0xFF0067C0);
+  static const blueDark = Color(0xFF005A9E);
+  static const blueLight = Color(0xFF3B8FD9);
+  static const blueBg = Color(0xFFE8F1FB);
+  static const purple = Color(0xFF6B5BD2);
+  static const green = Color(0xFF0F7B0F);
+  static const greenBg = Color(0xFFE6F4E6);
   static const orange = Color(0xFFF6821F); // Cloudflare 橙
-  static const red = Color(0xFFEF4444);
-  static const teal = Color(0xFF14B8A6);
+  static const red = Color(0xFFC42B1C);
+  static const teal = Color(0xFF038387);
 
-  static const gray = Color(0xFF7A8699);
-  static const grayDark = Color(0xFF9AA6B8);
+  static const text = Color(0xFF1A1A1A);
+  static const gray = Color(0xFF6B6B6B);
+  static const grayDark = Color(0xFF9A9A9A);
+  static const mute = Color(0xFF9A9A9A);
 
-  // ---- 背景（#F4F7FF → #DFE7FF 对角渐变）----
-  static const bgStart = Color(0xFFF4F7FF);
-  static const bgEnd = Color(0xFFDFE7FF);
-  static const bgMid = Color(0xFFEDF2FF);
+  // ---- 背景 ----
+  static const bgStart = Color(0xFFF3F3F3);
+  static const bgEnd = Color(0xFFF3F3F3);
+  static const bgMid = Color(0xFFF3F3F3);
 
-  // ---- 玻璃卡片 ----
-  static const card = Color(0xB3FFFFFF); // 70% 白
-  static const cardBorder = Color(0x8CFFFFFF); // 白描边
-  static const cardShadow = Color(0x1A3B5BDB); // 轻盈蓝影
+  // ---- 卡片 ----
+  static const card = Color(0xFFFFFFFF);
+  static const cardBorder = Color(0xFFE5E5E5);
+  static const cardShadow = Color(0x08000000);
   static const glassGradient = LinearGradient(
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
-    colors: [Color(0xCCFFFFFF), Color(0x99FFFFFF)],
+    colors: [Color(0xFFFFFFFF), Color(0xFFFFFFFF)],
   );
 
-  // ---- 白色磨砂侧栏（蓝白专业感）----
-  static const sidebar = Color(0x99FFFFFF); // 60% 白磨砂
-  static const sidebarBorder = Color(0x59FFFFFF);
-  static const sidebarText = Color(0xFF1E293B);
-  static const sidebarTextDim = Color(0xFF64748B);
+  // ---- 侧栏 ----
+  static const sidebar = Color(0xFFF7F7F7);
+  static const sidebarBorder = Color(0xFFE5E5E5);
+  static const sidebarText = Color(0xFF1A1A1A);
+  static const sidebarTextDim = Color(0xFF5F5F5F);
 
   // ---- 暗色模式 ----
-  static const bgDark = Color(0xFF0B1220);
-  static const cardDark = Color(0xCC16202F);
-  static const cardBorderDark = Color(0x1FFFFFFF);
-  static const cardShadowDark = Color(0x40000000);
+  static const bgDark = Color(0xFF202020);
+  static const cardDark = Color(0xFF2B2B2B);
+  static const cardBorderDark = Color(0x1AFFFFFF);
+  static const cardShadowDark = Color(0x33000000);
 
   // ---- 分隔线 / 填充 ----
-  static const sep = Color(0x140F172A);
-  static const sepDark = Color(0x1FFFFFFF);
-  static const fill = Color(0x66FFFFFF);
+  static const sep = Color(0xFFEFEFEF);
+  static const sepDark = Color(0x1AFFFFFF);
+  static const fill = Color(0xFFF5F5F5);
   static const fillDark = Color(0x14FFFFFF);
 
-  static const radius = 16.0; // 卡片圆角 16
-  static const inputRadius = 8.0; // 输入框圆角 8
-  static const cardPadding = 16.0;
+  static const radius = 8.0;
+  static const inputRadius = 5.0;
+  static const cardPadding = 14.0;
 
   // ---- 字体 ----
   static const fontFamily = 'Inter';
   static const fontFallback = <String>[
-    'PingFang SC',
     'Microsoft YaHei UI',
     'Microsoft YaHei',
     'Segoe UI',
+    'PingFang SC',
   ];
   static const monoFamily = 'JetBrains Mono';
 
-  /// 等宽数字/ID 样式（IP、AS 号、ID、含 / 或数字序列的字段）
   static const mono = TextStyle(
     fontFamily: monoFamily,
-    fontSize: 14,
+    fontSize: 13,
     fontWeight: FontWeight.w400,
     height: 1.35,
     letterSpacing: 0,
   );
 
-  /// 主按钮渐变蓝
-  static const primaryGradient = LinearGradient(
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
-    colors: [Color(0xFF5B8DEF), Color(0xFF3B6EF5)],
-  );
+  static const primaryGradient = LinearGradient(colors: [blue, blue]);
+  static const glowGradient = LinearGradient(colors: [blue, blue]);
 
-  /// 蓝紫发光渐变（选中态）
-  static const glowGradient = LinearGradient(
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
-    colors: [blue, purple],
-  );
+  static bool isLight(BuildContext c) =>
+      Theme.of(c).brightness == Brightness.light;
+  static Color cardOf(BuildContext c) => isLight(c) ? card : cardDark;
+  static Color borderOf(BuildContext c) =>
+      isLight(c) ? cardBorder : cardBorderDark;
+  static Color sepOf(BuildContext c) => isLight(c) ? sep : sepDark;
 }
 
-/// 全局背景：对角渐变 + 虚化圆形光斑
+/// 全局背景：纯色浅灰
 class GlassBackground extends StatelessWidget {
   final Widget child;
   const GlassBackground({super.key, required this.child});
 
   @override
   Widget build(BuildContext context) {
-    final isLight = Theme.of(context).brightness == Brightness.light;
-    return Stack(
-      children: [
-        // 底层对角渐变
-        Positioned.fill(
-          child: Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: isLight
-                    ? [Ios.bgStart, Ios.bgMid, Ios.bgEnd]
-                    : [const Color(0xFF0B1220), const Color(0xFF101A30)],
-              ),
-            ),
-          ),
-        ),
-        // 装饰光斑（虚化圆形）
-        if (isLight) ...[
-          Positioned(
-            top: -120,
-            left: -80,
-            child: _Blob(size: 380, color: Ios.blue.withValues(alpha: 0.16)),
-          ),
-          Positioned(
-            bottom: -160,
-            right: -100,
-            child: _Blob(size: 440, color: Ios.purple.withValues(alpha: 0.13)),
-          ),
-          Positioned(
-            top: 220,
-            right: 120,
-            child: _Blob(size: 220, color: Ios.teal.withValues(alpha: 0.10)),
-          ),
-        ],
-        child,
-      ],
+    return ColoredBox(
+      color: Ios.isLight(context) ? Ios.bgStart : Ios.bgDark,
+      child: child,
     );
   }
 }
 
-/// 虚化圆形光斑
-class _Blob extends StatelessWidget {
-  final double size;
-  final Color color;
-  const _Blob({required this.size, required this.color});
-
-  @override
-  Widget build(BuildContext context) {
-    return IgnorePointer(
-      child: Container(
-        width: size,
-        height: size,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          gradient: RadialGradient(
-            colors: [color, color.withValues(alpha: 0)],
-            stops: const [0.0, 1.0],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-/// 玻璃面板基础容器（磨砂 + 描边 + 轻投影）
+/// 卡片容器（白底 + 1px 描边 + 8px 圆角）
 class GlassPanel extends StatelessWidget {
   final Widget child;
   final double radius;
@@ -178,7 +115,7 @@ class GlassPanel extends StatelessWidget {
     super.key,
     required this.child,
     this.radius = Ios.radius,
-    this.blur = 20,
+    this.blur = 0,
     this.margin,
     this.color,
     this.gradient,
@@ -188,41 +125,24 @@ class GlassPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isLight = Theme.of(context).brightness == Brightness.light;
     return Container(
       margin: margin,
       decoration: BoxDecoration(
-        color: gradient == null
-            ? (color ?? (isLight ? Ios.card : Ios.cardDark))
-            : null,
+        color: gradient == null ? (color ?? Ios.cardOf(context)) : null,
         gradient: gradient,
         borderRadius: BorderRadius.circular(radius),
-        border: Border.all(
-          color: borderColor ??
-              (isLight ? Ios.cardBorder : Ios.cardBorderDark),
-          width: 1,
-        ),
-        boxShadow: boxShadow ??
-            [
-              BoxShadow(
-                color: isLight ? Ios.cardShadow : Ios.cardShadowDark,
-                blurRadius: 24,
-                offset: const Offset(0, 8),
-              ),
-            ],
+        border: Border.all(color: borderColor ?? Ios.borderOf(context)),
+        boxShadow: boxShadow ?? const [],
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(radius),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: blur, sigmaY: blur),
-          child: child,
-        ),
+        child: child,
       ),
     );
   }
 }
 
-/// 微动效：悬停抬升 + 轻微缩放
+/// 悬停效果（桌面软件只做轻微变化，不再缩放）
 class CfHoverLift extends StatefulWidget {
   final Widget child;
   final VoidCallback? onTap;
@@ -231,7 +151,7 @@ class CfHoverLift extends StatefulWidget {
     super.key,
     required this.child,
     this.onTap,
-    this.scale = 1.015,
+    this.scale = 1.0,
   });
 
   @override
@@ -249,18 +169,12 @@ class _CfHoverLiftState extends State<CfHoverLift> {
           : SystemMouseCursors.click,
       onEnter: (_) => setState(() => _hover = true),
       onExit: (_) => setState(() => _hover = false),
-      child: AnimatedScale(
-        scale: _hover ? widget.scale : 1,
-        duration: const Duration(milliseconds: 160),
-        curve: Curves.easeOutCubic,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 160),
-          curve: Curves.easeOutCubic,
-          transform: Matrix4.translationValues(0, _hover ? -2 : 0, 0),
-          child: GestureDetector(
-            onTap: widget.onTap,
-            child: widget.child,
-          ),
+      child: GestureDetector(
+        onTap: widget.onTap,
+        child: AnimatedOpacity(
+          duration: const Duration(milliseconds: 100),
+          opacity: _hover && widget.onTap != null ? 0.92 : 1,
+          child: widget.child,
         ),
       ),
     );
@@ -273,28 +187,33 @@ class IosTheme {
 
   static ThemeData _build(Brightness b) {
     final isLight = b == Brightness.light;
-    final onSurface = isLight ? const Color(0xFF0F172A) : Colors.white;
+    final onSurface = isLight ? Ios.text : Colors.white;
 
     final scheme = ColorScheme(
       brightness: b,
       primary: Ios.blue,
       onPrimary: Colors.white,
-      secondary: Ios.purple,
+      secondary: Ios.blue,
       onSecondary: Colors.white,
       error: Ios.red,
       onError: Colors.white,
-      surface: isLight ? const Color(0xFFF8FAFF) : Ios.cardDark,
+      surface: isLight ? Colors.white : Ios.cardDark,
       onSurface: onSurface,
       surfaceContainerHighest: isLight ? Ios.fill : Ios.fillDark,
     );
 
-    // 统一字体：Inter + 中文 PingFang SC / 微软雅黑 回退
-    const base = TextStyle(
+    final base = TextStyle(
       fontFamily: Ios.fontFamily,
       fontFamilyFallback: Ios.fontFallback,
-      color: Color(0xFF0F172A),
-      height: 1.45,
+      color: onSurface,
+      height: 1.4,
       letterSpacing: 0,
+    );
+
+    final border = OutlineInputBorder(
+      borderRadius: BorderRadius.circular(Ios.inputRadius),
+      borderSide:
+          BorderSide(color: isLight ? const Color(0xFFD6D6D6) : Ios.cardBorderDark),
     );
 
     return ThemeData(
@@ -304,33 +223,27 @@ class IosTheme {
       fontFamily: Ios.fontFamily,
       fontFamilyFallback: Ios.fontFallback,
       splashFactory: NoSplash.splashFactory,
+      hoverColor: isLight ? const Color(0x0A000000) : const Color(0x0FFFFFFF),
+      highlightColor: Colors.transparent,
       shadowColor: Ios.cardShadow,
       scaffoldBackgroundColor: Colors.transparent,
       canvasColor: Colors.transparent,
-      // 文本层级：正文 14/400，标题 16/600，侧栏 15/500，按钮 14/600
+      visualDensity: VisualDensity.compact,
       textTheme: TextTheme(
-        displaySmall: base.copyWith(
-            fontSize: 26, fontWeight: FontWeight.w700, letterSpacing: -0.5),
-        headlineMedium: base.copyWith(
-            fontSize: 20, fontWeight: FontWeight.w700, letterSpacing: -0.3),
-        titleLarge: base.copyWith(
-            fontSize: 18, fontWeight: FontWeight.w600, letterSpacing: -0.2),
-        titleMedium: base.copyWith(
-            fontSize: 16, fontWeight: FontWeight.w600, letterSpacing: 0),
-        titleSmall: base.copyWith(
-            fontSize: 15, fontWeight: FontWeight.w500, letterSpacing: 0),
-        bodyLarge: base.copyWith(fontSize: 15, fontWeight: FontWeight.w400),
-        bodyMedium: base.copyWith(fontSize: 14, fontWeight: FontWeight.w400),
+        displaySmall: base.copyWith(fontSize: 24, fontWeight: FontWeight.w700),
+        headlineMedium:
+            base.copyWith(fontSize: 20, fontWeight: FontWeight.w600),
+        titleLarge: base.copyWith(fontSize: 17, fontWeight: FontWeight.w600),
+        titleMedium: base.copyWith(fontSize: 15, fontWeight: FontWeight.w600),
+        titleSmall: base.copyWith(fontSize: 14, fontWeight: FontWeight.w500),
+        bodyLarge: base.copyWith(fontSize: 14, fontWeight: FontWeight.w400),
+        bodyMedium: base.copyWith(fontSize: 13, fontWeight: FontWeight.w400),
         bodySmall: base.copyWith(
-            fontSize: 12.5,
+            fontSize: 12,
             fontWeight: FontWeight.w400,
             color: isLight ? Ios.gray : Ios.grayDark),
-        labelLarge: base.copyWith(
-            fontSize: 14,
-            fontWeight: FontWeight.w600,
-            letterSpacing: 0.3),
-        labelMedium: base.copyWith(
-            fontSize: 12.5, fontWeight: FontWeight.w500, letterSpacing: 0.2),
+        labelLarge: base.copyWith(fontSize: 13, fontWeight: FontWeight.w600),
+        labelMedium: base.copyWith(fontSize: 12, fontWeight: FontWeight.w500),
       ),
       appBarTheme: AppBarTheme(
         backgroundColor: Colors.transparent,
@@ -339,8 +252,9 @@ class IosTheme {
         elevation: 0,
         scrolledUnderElevation: 0,
         centerTitle: false,
+        toolbarHeight: 48,
         titleTextStyle: base.copyWith(
-          fontSize: 17,
+          fontSize: 15,
           fontWeight: FontWeight.w600,
           color: onSurface,
         ),
@@ -350,43 +264,98 @@ class IosTheme {
         thickness: 1,
         space: 1,
       ),
-      // 输入框：圆角 8，聚焦蓝光描边
       inputDecorationTheme: InputDecorationTheme(
         isDense: true,
         filled: true,
-        fillColor: isLight ? const Color(0x99FFFFFF) : const Color(0x14FFFFFF),
+        fillColor: isLight ? Colors.white : const Color(0x14FFFFFF),
         contentPadding:
-            const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
-        hintStyle: base.copyWith(fontSize: 14, color: Ios.gray),
-        labelStyle: base.copyWith(fontSize: 14, color: Ios.gray),
-        floatingLabelStyle:
-            base.copyWith(fontSize: 13, color: Ios.blue),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(Ios.inputRadius),
-          borderSide: BorderSide(
-              color: isLight ? const Color(0x1F0F172A) : Ios.cardBorderDark),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(Ios.inputRadius),
-          borderSide: BorderSide(
-              color: isLight ? const Color(0x1F0F172A) : Ios.cardBorderDark),
-        ),
+            const EdgeInsets.symmetric(horizontal: 12, vertical: 11),
+        hintStyle: base.copyWith(fontSize: 13, color: Ios.mute),
+        labelStyle: base.copyWith(fontSize: 13, color: Ios.gray),
+        floatingLabelStyle: base.copyWith(fontSize: 12.5, color: Ios.blue),
+        border: border,
+        enabledBorder: border,
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(Ios.inputRadius),
-          borderSide: const BorderSide(color: Ios.blue, width: 1.6),
+          borderSide: const BorderSide(color: Ios.blue, width: 1.5),
+        ),
+      ),
+      filledButtonTheme: FilledButtonThemeData(
+        style: FilledButton.styleFrom(
+          backgroundColor: Ios.blue,
+          foregroundColor: Colors.white,
+          minimumSize: const Size(64, 34),
+          textStyle: base.copyWith(fontSize: 13, fontWeight: FontWeight.w600),
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(Ios.inputRadius)),
+        ),
+      ),
+      outlinedButtonTheme: OutlinedButtonThemeData(
+        style: OutlinedButton.styleFrom(
+          foregroundColor: onSurface,
+          backgroundColor: isLight ? const Color(0xFFFBFBFB) : Ios.fillDark,
+          minimumSize: const Size(64, 34),
+          side: BorderSide(
+              color: isLight ? const Color(0xFFDDDDDD) : Ios.cardBorderDark),
+          textStyle: base.copyWith(fontSize: 13, fontWeight: FontWeight.w600),
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(Ios.inputRadius)),
+        ),
+      ),
+      textButtonTheme: TextButtonThemeData(
+        style: TextButton.styleFrom(
+          foregroundColor: Ios.blue,
+          textStyle: base.copyWith(fontSize: 13, fontWeight: FontWeight.w500),
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(Ios.inputRadius)),
+        ),
+      ),
+      switchTheme: SwitchThemeData(
+        thumbColor: WidgetStateProperty.resolveWith((s) =>
+            s.contains(WidgetState.selected) ? Colors.white : Ios.gray),
+        trackColor: WidgetStateProperty.resolveWith((s) =>
+            s.contains(WidgetState.selected) ? Ios.blue : Colors.transparent),
+      ),
+      tooltipTheme: TooltipThemeData(
+        decoration: BoxDecoration(
+          color: const Color(0xFF2B2B2B),
+          borderRadius: BorderRadius.circular(4),
+        ),
+        textStyle: base.copyWith(fontSize: 12, color: Colors.white),
+        waitDuration: const Duration(milliseconds: 400),
+      ),
+      snackBarTheme: SnackBarThemeData(
+        behavior: SnackBarBehavior.floating,
+        backgroundColor: const Color(0xFF2B2B2B),
+        contentTextStyle: base.copyWith(fontSize: 13, color: Colors.white),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+        width: 420,
+      ),
+      dialogTheme: DialogThemeData(
+        backgroundColor: isLight ? Colors.white : Ios.cardDark,
+        surfaceTintColor: Colors.transparent,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      ),
+      popupMenuTheme: PopupMenuThemeData(
+        color: isLight ? Colors.white : Ios.cardDark,
+        surfaceTintColor: Colors.transparent,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(6),
+          side: BorderSide(
+              color: isLight ? Ios.cardBorder : Ios.cardBorderDark),
         ),
       ),
       scrollbarTheme: ScrollbarThemeData(
         thickness: WidgetStateProperty.all(6),
         radius: const Radius.circular(3),
         thumbColor: WidgetStateProperty.all(
-            isLight ? const Color(0x330F172A) : const Color(0x33FFFFFF)),
+            isLight ? const Color(0x33000000) : const Color(0x33FFFFFF)),
       ),
     );
   }
 }
 
-/// 毛玻璃圆角卡片
+/// 分组卡片（行之间 1px 分隔线）
 class IosCard extends StatelessWidget {
   final List<Widget> children;
   final EdgeInsetsGeometry margin;
@@ -400,16 +369,10 @@ class IosCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isLight = Theme.of(context).brightness == Brightness.light;
-    final sepColor = isLight ? Ios.sep : Ios.sepDark;
+    final sepColor = Ios.sepOf(context);
     final rows = <Widget>[];
     for (var i = 0; i < children.length; i++) {
-      if (i > 0) {
-        rows.add(Padding(
-          padding: EdgeInsetsDirectional.only(start: padding.horizontal),
-          child: Container(height: 1, color: sepColor),
-        ));
-      }
+      if (i > 0) rows.add(Container(height: 1, color: sepColor));
       rows.add(Padding(padding: padding, child: children[i]));
     }
     if (rows.isEmpty) rows.add(Padding(padding: padding));
@@ -427,28 +390,14 @@ class IosSectionHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsetsDirectional.fromSTEB(24, 22, 24, 8),
-      child: Row(
-        children: [
-          Container(
-            width: 3,
-            height: 13,
-            decoration: BoxDecoration(
-              gradient: Ios.glowGradient,
-              borderRadius: BorderRadius.circular(2),
-            ),
-          ),
-          const SizedBox(width: 8),
-          Text(
-            text,
-            style: const TextStyle(
-              fontSize: 12.5,
-              fontWeight: FontWeight.w600,
-              letterSpacing: 0.6,
-              color: Ios.gray,
-            ),
-          ),
-        ],
+      padding: const EdgeInsetsDirectional.fromSTEB(20, 18, 20, 8),
+      child: Text(
+        text,
+        style: const TextStyle(
+          fontSize: 13,
+          fontWeight: FontWeight.w600,
+          color: Ios.gray,
+        ),
       ),
     );
   }
@@ -477,12 +426,11 @@ class IosRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isLight = Theme.of(context).brightness == Brightness.light;
+    final isLight = Ios.isLight(context);
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(12),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
         child: Row(
           children: [
             if (leading != null) ...[leading!, const SizedBox(width: 12)],
@@ -495,20 +443,20 @@ class IosRow extends StatelessWidget {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
+                      fontSize: 13.5,
+                      fontWeight: FontWeight.w500,
                       color: titleColor,
                     ),
                   ),
                   if (subtitle != null) ...[
-                    const SizedBox(height: 3),
+                    const SizedBox(height: 2),
                     Text(
                       subtitle!,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
-                        fontSize: 12.5,
-                        color: isLight ? Ios.gray : Ios.grayDark,
+                        fontSize: 11.5,
+                        color: isLight ? Ios.mute : Ios.grayDark,
                       ),
                     ),
                   ],
@@ -520,15 +468,15 @@ class IosRow extends StatelessWidget {
                 value!,
                 style: const TextStyle(
                   fontSize: 13,
-                  fontWeight: FontWeight.w500,
-                  color: Ios.blue,
+                  fontWeight: FontWeight.w600,
+                  color: Ios.green,
                 ),
               ),
             if (trailing != null) ...[const SizedBox(width: 6), trailing!],
             if (chevron)
               const Padding(
                 padding: EdgeInsetsDirectional.only(start: 6),
-                child: Icon(Icons.chevron_right, size: 18, color: Ios.gray),
+                child: Icon(Icons.chevron_right, size: 18, color: Ios.mute),
               ),
           ],
         ),
@@ -537,6 +485,7 @@ class IosRow extends StatelessWidget {
   }
 }
 
+/// 淡色底图标块
 class IosIconBadge extends StatelessWidget {
   final IconData icon;
   final Color color;
@@ -545,7 +494,7 @@ class IosIconBadge extends StatelessWidget {
     super.key,
     required this.icon,
     required this.color,
-    this.size = 34,
+    this.size = 32,
   });
 
   @override
@@ -554,26 +503,15 @@ class IosIconBadge extends StatelessWidget {
       width: size,
       height: size,
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [color, Color.lerp(color, Colors.white, 0.22) ?? color],
-        ),
-        borderRadius: BorderRadius.circular(size * 0.28),
-        boxShadow: [
-          BoxShadow(
-            color: color.withValues(alpha: 0.28),
-            blurRadius: 10,
-            offset: const Offset(0, 3),
-          ),
-        ],
+        color: color.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(size * 0.22),
       ),
-      child: Icon(icon, color: Colors.white, size: size * 0.52),
+      child: Icon(icon, color: color, size: size * 0.5),
     );
   }
 }
 
-/// 页面顶栏主操作按钮（桌面软件形态，替代手机风格悬浮球）
+/// 页面顶栏主操作按钮
 class IosPageAction extends StatelessWidget {
   final String label;
   final VoidCallback? onPressed;
@@ -588,52 +526,53 @@ class IosPageAction extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      child: CfHoverLift(
-        onTap: onPressed,
-        child: Container(
-          decoration: BoxDecoration(
-            gradient: Ios.primaryGradient,
-            borderRadius: BorderRadius.circular(Ios.inputRadius),
-            boxShadow: [
-              BoxShadow(
-                color: Ios.blue.withValues(alpha: 0.32),
-                blurRadius: 14,
-                offset: const Offset(0, 5),
-              ),
-            ],
-          ),
-          child: Material(
-            color: Colors.transparent,
-            child: InkWell(
-              borderRadius: BorderRadius.circular(Ios.inputRadius),
-              onTap: onPressed,
-              child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(icon, size: 17, color: Colors.white),
-                    const SizedBox(width: 7),
-                    Text(
-                      label,
-                      style: const TextStyle(
-                        fontFamily: Ios.fontFamily,
-                        fontFamilyFallback: Ios.fontFallback,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                        letterSpacing: 0.3,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+      child: CfButton(label: label, icon: icon, onPressed: onPressed, primary: true),
+    );
+  }
+}
+
+/// 紧凑按钮（Windows 11 风格）
+class CfButton extends StatelessWidget {
+  final String label;
+  final IconData? icon;
+  final VoidCallback? onPressed;
+  final bool primary;
+  final bool danger;
+  const CfButton({
+    super.key,
+    required this.label,
+    this.icon,
+    this.onPressed,
+    this.primary = false,
+    this.danger = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final child = Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (icon != null) ...[Icon(icon, size: 15), const SizedBox(width: 6)],
+        Text(label),
+      ],
+    );
+    if (primary || danger) {
+      return FilledButton(
+        style: FilledButton.styleFrom(
+          backgroundColor: danger ? Ios.red : Ios.blue,
+          padding: const EdgeInsets.symmetric(horizontal: 14),
         ),
+        onPressed: onPressed,
+        child: child,
+      );
+    }
+    return OutlinedButton(
+      style: OutlinedButton.styleFrom(
+        padding: const EdgeInsets.symmetric(horizontal: 14),
       ),
+      onPressed: onPressed,
+      child: child,
     );
   }
 }
@@ -655,86 +594,34 @@ class IosButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isLight = Theme.of(context).brightness == Brightness.light;
     final child = busy
-        ? const SizedBox(
-            width: 18,
-            height: 18,
-            child:
-                CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+        ? SizedBox(
+            width: 16,
+            height: 16,
+            child: CircularProgressIndicator(
+                strokeWidth: 2,
+                color: secondary ? Ios.blue : Colors.white),
           )
         : Row(
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: [
               if (icon != null) ...[
-                Icon(icon, size: 17),
+                Icon(icon, size: 16),
                 const SizedBox(width: 7),
               ],
-              Text(
-                label,
-                style: const TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                  letterSpacing: 0.3,
-                ),
-              ),
+              Text(label,
+                  style: const TextStyle(
+                      fontSize: 13.5, fontWeight: FontWeight.w600)),
             ],
           );
 
-    if (secondary) {
-      return SizedBox(
-        width: double.infinity,
-        height: 46,
-        child: FilledButton(
-          style: FilledButton.styleFrom(
-            backgroundColor:
-                isLight ? const Color(0x99FFFFFF) : Ios.fillDark,
-            foregroundColor: Ios.blue,
-            elevation: 0,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(Ios.inputRadius),
-            ),
-          ),
-          onPressed: busy ? null : onPressed,
-          child: child,
-        ),
-      );
-    }
-
-    // 主按钮：渐变蓝 + 悬停上浮
     return SizedBox(
       width: double.infinity,
-      height: 46,
-      child: CfHoverLift(
-        onTap: busy ? null : onPressed,
-        child: Container(
-          decoration: BoxDecoration(
-            gradient: Ios.primaryGradient,
-            borderRadius: BorderRadius.circular(Ios.inputRadius),
-            boxShadow: [
-              BoxShadow(
-                color: Ios.blue.withValues(alpha: 0.3),
-                blurRadius: 16,
-                offset: const Offset(0, 6),
-              ),
-            ],
-          ),
-          child: FilledButton(
-            style: FilledButton.styleFrom(
-              backgroundColor: Colors.transparent,
-              disabledBackgroundColor: Colors.transparent,
-              foregroundColor: Colors.white,
-              elevation: 0,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(Ios.inputRadius),
-              ),
-            ),
-            onPressed: busy ? null : onPressed,
-            child: child,
-          ),
-        ),
-      ),
+      height: 38,
+      child: secondary
+          ? OutlinedButton(onPressed: busy ? null : onPressed, child: child)
+          : FilledButton(onPressed: busy ? null : onPressed, child: child),
     );
   }
 }
@@ -750,15 +637,23 @@ class AsyncView<T> extends StatelessWidget {
       data: builder,
       loading: () => const Padding(
         padding: EdgeInsets.all(40),
-        child: Center(child: CircularProgressIndicator(strokeWidth: 2.4)),
+        child: Center(
+          child: SizedBox(
+            width: 22,
+            height: 22,
+            child: CircularProgressIndicator(strokeWidth: 2.2),
+          ),
+        ),
       ),
       error: (e, _) => Padding(
         padding: const EdgeInsets.all(24),
         child: Column(
           children: [
-            const Icon(Icons.error_outline, color: Ios.red, size: 32),
+            const Icon(Icons.error_outline, color: Ios.red, size: 28),
             const SizedBox(height: 8),
-            Text('$e', textAlign: TextAlign.center),
+            Text('$e',
+                textAlign: TextAlign.center,
+                style: const TextStyle(fontSize: 12.5, color: Ios.gray)),
           ],
         ),
       ),
@@ -770,7 +665,7 @@ class AsyncView<T> extends StatelessWidget {
 /// 数据工作台组件
 /// ============================================================
 
-/// 状态药丸 / 标签胶囊（淡蓝底圆角胶囊）
+/// 标签（方角小标签，类似「完成」「记录」）
 class CfPill extends StatelessWidget {
   final String text;
   final Color color;
@@ -779,18 +674,16 @@ class CfPill extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 3),
+      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.12),
-        borderRadius: BorderRadius.circular(999),
-        border: Border.all(color: color.withValues(alpha: 0.22)),
+        borderRadius: BorderRadius.circular(3),
       ),
       child: Text(
         text,
         style: TextStyle(
-          fontSize: 11.5,
+          fontSize: 11,
           fontWeight: FontWeight.w600,
-          letterSpacing: 0.2,
           color: color,
         ),
       ),
@@ -798,7 +691,20 @@ class CfPill extends StatelessWidget {
   }
 }
 
-/// 页面骨架：标题 + 副说明 + 右侧操作
+/// 状态小圆点
+class CfDot extends StatelessWidget {
+  final Color color;
+  final double size;
+  const CfDot(this.color, {super.key, this.size = 6});
+  @override
+  Widget build(BuildContext context) => Container(
+        width: size,
+        height: size,
+        decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+      );
+}
+
+/// 页面标题 + 副说明 + 右侧操作
 class CfPageHeader extends StatelessWidget {
   final String title;
   final String subtitle;
@@ -813,7 +719,7 @@ class CfPageHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(24, 22, 24, 16),
+      padding: const EdgeInsets.fromLTRB(20, 18, 20, 12),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -824,19 +730,13 @@ class CfPageHeader extends StatelessWidget {
                 Text(
                   title,
                   style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w700,
-                    letterSpacing: -0.3,
-                  ),
+                      fontSize: 18, fontWeight: FontWeight.w600),
                 ),
-                const SizedBox(height: 5),
+                const SizedBox(height: 3),
                 Text(
                   subtitle,
                   style: const TextStyle(
-                    fontSize: 13,
-                    color: Ios.gray,
-                    height: 1.45,
-                  ),
+                      fontSize: 12, color: Ios.gray, height: 1.4),
                 ),
               ],
             ),
@@ -848,7 +748,131 @@ class CfPageHeader extends StatelessWidget {
   }
 }
 
-/// 玻璃数据表格（磨砂 + 表头 + 悬停行）
+/// 数据卡片：标题行（标题 + 副标题 + 右侧操作）+ 内容
+class CfCard extends StatelessWidget {
+  final String title;
+  final String? subtitle;
+  final List<Widget> actions;
+  final Widget child;
+  final EdgeInsetsGeometry? margin;
+  const CfCard({
+    super.key,
+    required this.title,
+    this.subtitle,
+    this.actions = const [],
+    required this.child,
+    this.margin,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GlassPanel(
+      margin: margin,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(14, 12, 12, 10),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(title,
+                          style: const TextStyle(
+                              fontSize: 14, fontWeight: FontWeight.w600)),
+                      if (subtitle != null) ...[
+                        const SizedBox(height: 2),
+                        Text(subtitle!,
+                            style: const TextStyle(
+                                fontSize: 11.5, color: Ios.gray)),
+                      ],
+                    ],
+                  ),
+                ),
+                for (final a in actions) ...[const SizedBox(width: 8), a],
+              ],
+            ),
+          ),
+          child,
+        ],
+      ),
+    );
+  }
+}
+
+/// 顶部数据卡（库存估值 / 在线账号 那种）
+class CfStatTile extends StatelessWidget {
+  final String label;
+  final String value;
+  final String? suffix;
+  final String sub;
+  final Color? dot;
+  final VoidCallback? onTap;
+  const CfStatTile({
+    super.key,
+    required this.label,
+    required this.value,
+    this.suffix,
+    required this.sub,
+    this.dot,
+    this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return CfHoverLift(
+      onTap: onTap,
+      child: GlassPanel(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(14, 11, 14, 11),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(label,
+                  style: const TextStyle(fontSize: 12, color: Ios.gray)),
+              const SizedBox(height: 6),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.baseline,
+                textBaseline: TextBaseline.alphabetic,
+                children: [
+                  Flexible(
+                    child: Text(value,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                            fontSize: 24, fontWeight: FontWeight.w700)),
+                  ),
+                  if (suffix != null)
+                    Text(' $suffix',
+                        style:
+                            const TextStyle(fontSize: 12.5, color: Ios.mute)),
+                ],
+              ),
+              const SizedBox(height: 4),
+              Row(
+                children: [
+                  if (dot != null) ...[CfDot(dot!), const SizedBox(width: 5)],
+                  Expanded(
+                    child: Text(sub,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style:
+                            const TextStyle(fontSize: 11.5, color: Ios.mute)),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// 数据表格（白卡 + 浅灰表头 + 悬停行）
 class CfTable extends StatelessWidget {
   final List<String> columns;
   final List<List<Widget>> rows;
@@ -862,95 +886,59 @@ class CfTable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isLight = Theme.of(context).brightness == Brightness.light;
-    final headColor =
-        isLight ? const Color(0xFF5B6779) : const Color(0xFF94A3B8);
-    final lineColor = isLight ? const Color(0x120F172A) : Ios.sepDark;
+    final isLight = Ios.isLight(context);
+    final lineColor = Ios.sepOf(context);
 
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 24),
-      decoration: BoxDecoration(
-        color: isLight ? const Color(0xA6FFFFFF) : Ios.cardDark,
-        borderRadius: BorderRadius.circular(Ios.radius),
-        border: Border.all(
-          color: isLight ? Ios.cardBorder : Ios.cardBorderDark,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: isLight ? Ios.cardShadow : Ios.cardShadowDark,
-            blurRadius: 22,
-            offset: const Offset(0, 8),
-          ),
-        ],
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(Ios.radius),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
-          child: Column(
-            children: [
-              // 表头
-              Container(
-                color: isLight
-                    ? const Color(0x66F4F7FF)
-                    : const Color(0x14FFFFFF),
-                child: Row(
-                  children: [
-                    for (final c in columns)
-                      Expanded(
-                        flex: 1,
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 16, vertical: 10),
-                          child: Text(
-                            c,
-                            style: TextStyle(
-                              fontSize: 11.5,
-                              fontWeight: FontWeight.w600,
-                              letterSpacing: 0.5,
-                              color: headColor,
-                            ),
-                          ),
+    return GlassPanel(
+      margin: const EdgeInsets.symmetric(horizontal: 20),
+      child: Column(
+        children: [
+          Container(
+            color: isLight ? const Color(0xFFFAFAFA) : const Color(0x0AFFFFFF),
+            child: Row(
+              children: [
+                for (final c in columns)
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 14, vertical: 9),
+                      child: Text(
+                        c,
+                        style: const TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                          color: Ios.gray,
                         ),
                       ),
-                  ],
-                ),
-              ),
-              if (rows.isEmpty && emptyState != null) emptyState!,
-              for (var r = 0; r < rows.length; r++)
-                _HoverRow(
-                  zebra: r % 2 == 1,
-                  lineColor: lineColor,
-                  child: Row(
-                    children: [
-                      for (final c in rows[r]) Expanded(flex: 1, child: c),
-                    ],
+                    ),
                   ),
-                ),
-            ],
+              ],
+            ),
           ),
-        ),
+          if (rows.isEmpty && emptyState != null) emptyState!,
+          for (var r = 0; r < rows.length; r++)
+            _HoverRow(
+              lineColor: lineColor,
+              child: Row(
+                children: [for (final c in rows[r]) Expanded(child: c)],
+              ),
+            ),
+        ],
       ),
     );
   }
 
   static Widget cellOf(Widget child, {EdgeInsetsGeometry? padding}) => Padding(
         padding:
-            padding ?? const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            padding ?? const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
         child: child,
       );
 }
 
-/// 悬停高亮数据行
 class _HoverRow extends StatefulWidget {
-  final bool zebra;
   final Color lineColor;
   final Widget child;
-  const _HoverRow({
-    required this.zebra,
-    required this.lineColor,
-    required this.child,
-  });
+  const _HoverRow({required this.lineColor, required this.child});
 
   @override
   State<_HoverRow> createState() => _HoverRowState();
@@ -961,23 +949,15 @@ class _HoverRowState extends State<_HoverRow> {
 
   @override
   Widget build(BuildContext context) {
-    final isLight = Theme.of(context).brightness == Brightness.light;
+    final isLight = Ios.isLight(context);
     return MouseRegion(
-      cursor: SystemMouseCursors.click,
       onEnter: (_) => setState(() => _hover = true),
       onExit: (_) => setState(() => _hover = false),
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 110),
+      child: Container(
         decoration: BoxDecoration(
           color: _hover
-              ? (isLight
-                  ? const Color(0x99EAF0FF)
-                  : const Color(0x1F5B8DEF))
-              : widget.zebra
-                  ? (isLight
-                      ? const Color(0x33F4F7FF)
-                      : const Color(0x0AFFFFFF))
-                  : Colors.transparent,
+              ? (isLight ? const Color(0xFFF7F7F7) : const Color(0x0FFFFFFF))
+              : Colors.transparent,
           border: Border(top: BorderSide(color: widget.lineColor)),
         ),
         child: widget.child,
@@ -986,7 +966,7 @@ class _HoverRowState extends State<_HoverRow> {
   }
 }
 
-/// 统一玻璃拟态弹窗（替代 Material AlertDialog，保证全应用视觉一致）
+/// 统一弹窗
 class CfDialog extends StatelessWidget {
   final String title;
   final String? subtitle;
@@ -1012,7 +992,7 @@ class CfDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isLight = Theme.of(context).brightness == Brightness.light;
+    final isLight = Ios.isLight(context);
     return Dialog(
       backgroundColor: Colors.transparent,
       elevation: 0,
@@ -1020,143 +1000,66 @@ class CfDialog extends StatelessWidget {
       child: ConstrainedBox(
         constraints: BoxConstraints(maxWidth: maxWidth),
         child: GlassPanel(
-          radius: 18,
-          blur: 24,
-          color: isLight ? const Color(0xF2FFFFFF) : const Color(0xF21A2437),
+          boxShadow: const [
+            BoxShadow(
+                color: Color(0x33000000), blurRadius: 32, offset: Offset(0, 12)),
+          ],
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // 标题区
               Padding(
-                padding: const EdgeInsets.fromLTRB(24, 20, 16, 14),
-                child: Row(
+                padding: const EdgeInsets.fromLTRB(22, 18, 22, 4),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            title,
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              letterSpacing: -0.1,
-                            ),
-                          ),
-                          if (subtitle != null) ...[
-                            const SizedBox(height: 4),
-                            Text(
-                              subtitle!,
-                              style: const TextStyle(
-                                  fontSize: 12.5,
-                                  color: Ios.gray,
-                                  height: 1.45),
-                            ),
-                          ],
-                        ],
-                      ),
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.close, size: 18),
-                      color: Ios.gray,
-                      onPressed: () => Navigator.pop(context),
-                    ),
+                    Text(title,
+                        style: const TextStyle(
+                            fontSize: 17, fontWeight: FontWeight.w600)),
+                    if (subtitle != null) ...[
+                      const SizedBox(height: 4),
+                      Text(subtitle!,
+                          style: const TextStyle(
+                              fontSize: 12.5, color: Ios.gray, height: 1.45)),
+                    ],
                   ],
                 ),
               ),
-              Divider(
-                  height: 1,
-                  color: isLight
-                      ? const Color(0x120F172A)
-                      : Ios.sepDark),
-              // 内容
               Flexible(
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(24, 18, 24, 4),
+                  padding: const EdgeInsets.fromLTRB(22, 14, 22, 18),
                   child: SingleChildScrollView(child: child),
                 ),
               ),
-              // 底部按钮
-              Padding(
-                padding: const EdgeInsets.fromLTRB(24, 14, 24, 20),
+              Container(
+                padding: const EdgeInsets.fromLTRB(22, 14, 22, 14),
+                decoration: BoxDecoration(
+                  color: isLight ? const Color(0xFFF3F3F3) : const Color(0x0AFFFFFF),
+                  border: Border(top: BorderSide(color: Ios.borderOf(context))),
+                ),
                 child: Row(
                   children: [
                     Expanded(
                       child: SizedBox(
-                        height: 42,
-                        child: OutlinedButton(
-                          style: OutlinedButton.styleFrom(
-                            foregroundColor: Ios.gray,
-                            side: BorderSide(
-                                color: isLight
-                                    ? const Color(0x1F0F172A)
-                                    : Ios.cardBorderDark),
-                            shape: RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.circular(Ios.inputRadius),
-                            ),
-                          ),
-                          onPressed: () => Navigator.pop(context),
-                          child: Text(cancelLabel,
-                              style: const TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w500,
-                                  letterSpacing: 0.3)),
+                        height: 34,
+                        child: FilledButton(
+                          style: FilledButton.styleFrom(
+                              backgroundColor:
+                                  confirmDanger ? Ios.red : Ios.blue),
+                          onPressed: (confirmEnabled && onConfirm != null)
+                              ? onConfirm
+                              : null,
+                          child: Text(confirmLabel),
                         ),
                       ),
                     ),
-                    const SizedBox(width: 12),
+                    const SizedBox(width: 8),
                     Expanded(
-                      flex: 2,
                       child: SizedBox(
-                        height: 42,
-                        child: CfHoverLift(
-                          onTap: (confirmEnabled && onConfirm != null)
-                              ? onConfirm
-                              : null,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              gradient: confirmDanger
-                                  ? const LinearGradient(colors: [
-                                      Color(0xFFF87171),
-                                      Ios.red
-                                    ])
-                                  : Ios.primaryGradient,
-                              borderRadius:
-                                  BorderRadius.circular(Ios.inputRadius),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: (confirmDanger ? Ios.red : Ios.blue)
-                                      .withValues(
-                                          alpha: confirmEnabled ? 0.3 : 0.1),
-                                  blurRadius: 12,
-                                  offset: const Offset(0, 4),
-                                ),
-                              ],
-                            ),
-                            child: FilledButton(
-                              style: FilledButton.styleFrom(
-                                backgroundColor: Colors.transparent,
-                                disabledBackgroundColor: Colors.transparent,
-                                foregroundColor: Colors.white,
-                                elevation: 0,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(
-                                      Ios.inputRadius),
-                                ),
-                              ),
-                              onPressed:
-                                  (confirmEnabled && onConfirm != null)
-                                      ? onConfirm
-                                      : null,
-                              child: Text(confirmLabel,
-                                  style: const TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w600,
-                                      letterSpacing: 0.3)),
-                            ),
-                          ),
+                        height: 34,
+                        child: OutlinedButton(
+                          onPressed: () => Navigator.pop(context),
+                          child: Text(cancelLabel),
                         ),
                       ),
                     ),
@@ -1171,7 +1074,6 @@ class CfDialog extends StatelessWidget {
   }
 }
 
-/// 便捷：显示玻璃弹窗
 Future<T?> showCfDialog<T>(
   BuildContext context, {
   required String title,
@@ -1187,6 +1089,7 @@ Future<T?> showCfDialog<T>(
   return showDialog<T>(
     context: context,
     barrierDismissible: false,
+    barrierColor: const Color(0x4D000000),
     builder: (ctx) => CfDialog(
       title: title,
       subtitle: subtitle,
@@ -1201,44 +1104,37 @@ Future<T?> showCfDialog<T>(
   );
 }
 
-/// 空状态
-class CfEmptyState extends StatelessWidget {  final IconData icon;
+/// 空状态（「暂无成交记录」那种）
+class CfEmptyState extends StatelessWidget {
+  final IconData icon;
   final String title;
   final String hint;
+  final Widget? action;
   const CfEmptyState({
     super.key,
     required this.icon,
     required this.title,
     required this.hint,
+    this.action,
   });
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 52, horizontal: 24),
+      padding: const EdgeInsets.symmetric(vertical: 36, horizontal: 24),
       child: Column(
         children: [
-          Container(
-            width: 60,
-            height: 60,
-            decoration: BoxDecoration(
-              color: Ios.blue.withValues(alpha: 0.08),
-              shape: BoxShape.circle,
-            ),
-            child: Icon(icon, size: 28, color: Ios.blue.withValues(alpha: 0.6)),
-          ),
-          const SizedBox(height: 16),
-          Text(
-            title,
-            style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
-          ),
-          const SizedBox(height: 7),
-          Text(
-            hint,
-            textAlign: TextAlign.center,
-            style: const TextStyle(
-                fontSize: 13, color: Ios.gray, height: 1.5),
-          ),
+          Icon(icon, size: 30, color: Ios.mute),
+          const SizedBox(height: 10),
+          Text(title,
+              style:
+                  const TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
+          const SizedBox(height: 5),
+          Text(hint,
+              textAlign: TextAlign.center,
+              style:
+                  const TextStyle(fontSize: 12, color: Ios.gray, height: 1.5)),
+          if (action != null) ...[const SizedBox(height: 14), action!],
         ],
       ),
     );
